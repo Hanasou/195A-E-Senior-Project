@@ -16,9 +16,14 @@ public class DashboardActivity extends AppCompatActivity {
         setContentView(R.layout.activity_dashboard);
     }
 
+    public void registerDepartment(View view) {
+        //Intent intent = new Intent(this, DepartmentRegistrationActivity.class);
+        //startActivity(intent);
+    }
     public void signOut(View view) {
         FirebaseAuth.getInstance().signOut();
         Intent intent = new Intent(this, MainActivity.class);
         startActivity(intent);
     }
+
 }
