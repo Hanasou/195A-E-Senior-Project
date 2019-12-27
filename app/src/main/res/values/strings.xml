@@ -24,4 +24,8 @@
     <string name="sign_out">Sign Out</string>
     <string name="button">Button</string>
     <string name="registration">Registration</string>
+    <string name="Undefined">TextView</string>
+    <string name="collegeSearch">Search for your College</string>
+    <string name="select_your_college" />
+    <string name="submit">Submit</string>
 </resources>
