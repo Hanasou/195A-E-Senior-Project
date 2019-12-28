@@ -16,7 +16,9 @@ import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.android.gms.tasks.Task;
 import com.google.firebase.auth.AuthResult;
 import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.auth.FirebaseAuthWeakPasswordException;
 import com.google.firebase.auth.FirebaseUser;
+import com.google.firebase.auth.UserProfileChangeRequest;
 import com.google.firebase.firestore.FirebaseFirestore;
 
 import java.util.HashMap;
@@ -39,6 +41,12 @@ public class SignUpActivity extends AppCompatActivity {
         db = FirebaseFirestore.getInstance();
     }
 
+    public String capitalize(String s) {
+        if (s == null || s.isEmpty()) {
+            return s;
+        }
+        return s.substring(0, 1).toUpperCase() + s.substring(1);
+    }
     /**
      * Registers user
      * @param view
@@ -53,8 +61,8 @@ public class SignUpActivity extends AppCompatActivity {
         final String usernameString = username.getText().toString();
         final String passwordString = password.getText().toString();
         final String confirmPasswordString = confirmPassword.getText().toString();
-        final String firstNameString = firstName.getText().toString();
-        final String lastNameString = lastName.getText().toString();
+        final String firstNameString = capitalize(firstName.getText().toString());
+        final String lastNameString = capitalize(lastName.getText().toString());
 
         // Enforce constraints upon sign up.
         if (!passwordString.equals(confirmPasswordString)) {
@@ -94,8 +102,14 @@ public class SignUpActivity extends AppCompatActivity {
                                             }
                                         });
 
+
                                 // Sign in user
                                 FirebaseUser user = mAuth.getCurrentUser();
+
+                                // Change user's display name to their first name and last name
+                                UserProfileChangeRequest.Builder changeRequest = new UserProfileChangeRequest.Builder();
+                                changeRequest.setDisplayName(firstNameString + " " + lastNameString);
+                                user.updateProfile(changeRequest.build());
 
                                 // Redirect user back to main activity
                                 Intent intent = new Intent(SignUpActivity.this, MainActivity.class);
@@ -104,8 +118,17 @@ public class SignUpActivity extends AppCompatActivity {
                             else {
                                 // If sign in fails, display a message to the user.
                                 Log.w("Create User: ", "createUserWithEmail:failure", task.getException());
-                                Toast.makeText(SignUpActivity.this, "Authentication failed.",
-                                        Toast.LENGTH_SHORT).show();
+                                try {
+                                    throw task.getException();
+                                }
+                                catch (FirebaseAuthWeakPasswordException e) {
+                                    Toast.makeText(SignUpActivity.this, "Password must be 6 characters long",
+                                            Toast.LENGTH_SHORT).show();
+                                }
+                                catch (Exception e) {
+                                    Toast.makeText(SignUpActivity.this, "Authentication failed.",
+                                            Toast.LENGTH_SHORT).show();
+                                }
                             }
                         }
                     });
