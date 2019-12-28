@@ -36,6 +36,14 @@ public class DashboardActivity extends AppCompatActivity {
     }
 
     /**
+     * Navigates to advising hub activity.
+     */
+    public void advisingHub(View view) {
+        Intent intent = new Intent(this, AdvisingHubActivity.class);
+        startActivity(intent);
+    }
+
+    /**
      * Signs the user out
      * @param view
      */
