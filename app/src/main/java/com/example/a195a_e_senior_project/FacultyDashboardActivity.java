@@ -11,8 +11,7 @@ import com.example.a195a_e_senior_project.classes.User;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 
-public class DashboardActivity extends AppCompatActivity {
-
+public class FacultyDashboardActivity extends AppCompatActivity {
     private FirebaseAuth mAuth;
     private FirebaseUser user;
     private User currentUser;
@@ -20,9 +19,8 @@ public class DashboardActivity extends AppCompatActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_dashboard);
+        setContentView(R.layout.activity_faculty_dashboard);
 
-        // Display a welcome message for the user.
         mAuth = FirebaseAuth.getInstance();
         user = mAuth.getCurrentUser();
         currentUser = new User(user);
@@ -31,19 +29,11 @@ public class DashboardActivity extends AppCompatActivity {
     }
 
     /**
-     * Navigate to the register department activity.
+     * Configures weekly open office hours for advisors
      * @param view
      */
-    public void registerDepartment(View view) {
-        Intent intent = new Intent(this, DepartmentRegistrationActivity.class);
-        startActivity(intent);
-    }
-
-    /**
-     * Navigates to advising hub activity.
-     */
-    public void advisingHub(View view) {
-        Intent intent = new Intent(this, AdvisingHubActivity.class);
+    public void setSchedule(View view) {
+        Intent intent = new Intent(this, SetScheduleActivity.class);
         startActivity(intent);
     }
 
@@ -57,5 +47,4 @@ public class DashboardActivity extends AppCompatActivity {
         Intent intent = new Intent(this, MainActivity.class);
         startActivity(intent);
     }
-
 }

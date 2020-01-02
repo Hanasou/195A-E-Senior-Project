@@ -7,7 +7,10 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
+import android.widget.AdapterView;
+import android.widget.ArrayAdapter;
 import android.widget.EditText;
+import android.widget.Spinner;
 import android.widget.Toast;
 
 import com.google.android.gms.tasks.OnCompleteListener;
@@ -21,13 +24,19 @@ import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.auth.UserProfileChangeRequest;
 import com.google.firebase.firestore.FirebaseFirestore;
 
+import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
+
+import static android.view.View.VISIBLE;
 
 public class SignUpActivity extends AppCompatActivity {
 
     private FirebaseAuth mAuth;
     private FirebaseFirestore db;
+    private Spinner selectRole;
+    private String roleSelected;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -36,9 +45,27 @@ public class SignUpActivity extends AppCompatActivity {
 
         // Initialize mAuth
         mAuth = FirebaseAuth.getInstance();
-
         // Initialize Cloud Firestore instance
         db = FirebaseFirestore.getInstance();
+        selectRole = (Spinner) findViewById(R.id.selectRole);
+
+        List<String> categories = new ArrayList<String>();
+        categories.add("Student");
+        categories.add("Faculty");
+
+        ArrayAdapter<String> adapter = new ArrayAdapter<String>(this,
+                android.R.layout.simple_spinner_item, categories);
+        adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
+        selectRole.setAdapter(adapter);
+
+        selectRole.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
+            public void onItemSelected(AdapterView<?> parent, View view,
+                                       int pos, long id) {
+                roleSelected = parent.getItemAtPosition(pos).toString();
+            }
+            public void onNothingSelected(AdapterView<?> parent) {
+            }
+        });
     }
 
     public String capitalize(String s) {
@@ -87,6 +114,7 @@ public class SignUpActivity extends AppCompatActivity {
                                 Map<String, Object> addUser = new HashMap<>();
                                 addUser.put("first", firstNameString);
                                 addUser.put("last", lastNameString);
+                                addUser.put("isFaculty", false);
                                 db.collection("users").document(usernameString)
                                         .set(addUser)
                                         .addOnSuccessListener(new OnSuccessListener<Void>() {

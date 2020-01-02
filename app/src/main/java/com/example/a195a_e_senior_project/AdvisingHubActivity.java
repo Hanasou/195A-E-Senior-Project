@@ -2,6 +2,7 @@ package com.example.a195a_e_senior_project;
 
 import androidx.appcompat.app.AppCompatActivity;
 
+import android.content.Intent;
 import android.os.Bundle;
 import android.view.View;
 
@@ -18,6 +19,7 @@ public class AdvisingHubActivity extends AppCompatActivity {
      * @param view
      */
     public void makeAppointment(View view) {
-        
+        Intent intent = new Intent(this, RegisterAppointmentActivity.class);
+        startActivity(intent);
     }
 }

@@ -31,5 +31,13 @@
     <string name="advising_hub">Advising Hub</string>
     <string name="community">Community</string>
     <string name="make_appointment">Make Appointment</string>
->>>>>>> please work
+    <string name="set_date">Set Date</string>
+    <string name="set_schedule">Set Schedule</string>
+    <string name="monday">Monday</string>
+    <string name="tuesday">Tuesday</string>
+    <string name="wednesday">Wednesday</string>
+    <string name="thursday">Thursday</string>
+    <string name="friday">Friday</string>
+    <string name="set_time">Set Time</string>
+    >>>>>>> please work
 </resources>
