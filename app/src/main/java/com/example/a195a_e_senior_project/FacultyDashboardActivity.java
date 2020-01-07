@@ -28,12 +28,21 @@ public class FacultyDashboardActivity extends AppCompatActivity {
         welcomeMessage.setText("Welcome " + currentUser.getName());
     }
 
+    public void currentSchedule(View view) {
+        Intent intent = new Intent(this, ViewScheduleActivity.class);
+        startActivity(intent);
+    }
     /**
      * Configures weekly open office hours for advisors
      * @param view
      */
     public void setSchedule(View view) {
         Intent intent = new Intent(this, SetScheduleActivity.class);
+        startActivity(intent);
+    }
+
+    public void advisorRegistration(View view) {
+        Intent intent = new Intent(this, AdvisorRegistrationActivity.class);
         startActivity(intent);
     }
 

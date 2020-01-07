@@ -15,7 +15,6 @@ public class DashboardActivity extends AppCompatActivity {
 
     private FirebaseAuth mAuth;
     private FirebaseUser user;
-    private User currentUser;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -25,9 +24,8 @@ public class DashboardActivity extends AppCompatActivity {
         // Display a welcome message for the user.
         mAuth = FirebaseAuth.getInstance();
         user = mAuth.getCurrentUser();
-        currentUser = new User(user);
         TextView welcomeMessage = (TextView) findViewById(R.id.welcomeMessage);
-        welcomeMessage.setText("Welcome " + currentUser.getName());
+        welcomeMessage.setText("Welcome " + user.getDisplayName());
     }
 
     /**

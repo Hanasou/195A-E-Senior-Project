@@ -9,7 +9,9 @@
         android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="true"
         android:theme="@style/AppTheme">
-        <activity android:name=".SetScheduleActivity"></activity>
+        <activity android:name=".AdvisorRegistrationActivity"></activity>
+        <activity android:name=".ViewScheduleActivity" />
+        <activity android:name=".SetScheduleActivity" />
         <activity android:name=".FacultyDashboardActivity" />
         <activity android:name=".RegisterAppointmentActivity" />
         <activity android:name=".AdvisingHubActivity" />

@@ -73,8 +73,6 @@ public class DepartmentRegistrationActivity extends AppCompatActivity {
                 // An item was selected. You can retrieve the selected item using
                 // parent.getItemAtPosition(pos)
                 collegeSelected = parent.getItemAtPosition(pos).toString();
-                Toast.makeText(parent.getContext(), collegeSelected,
-                        Toast.LENGTH_SHORT).show();
                 collegesRef.whereEqualTo("name", collegeSelected)
                         .get()
                         .addOnFailureListener(new OnFailureListener() {
@@ -126,7 +124,7 @@ public class DepartmentRegistrationActivity extends AppCompatActivity {
 
             }
             public void onNothingSelected(AdapterView<?> parent) {
-                //This is required
+                //Method is required as defined by interface
             }
         });
 

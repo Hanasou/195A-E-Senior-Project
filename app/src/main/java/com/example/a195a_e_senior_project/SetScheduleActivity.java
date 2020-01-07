@@ -17,11 +17,14 @@ import android.widget.TextView;
 import android.widget.TimePicker;
 import android.widget.Toast;
 
+import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.OnSuccessListener;
+import com.google.android.gms.tasks.Task;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.firestore.DocumentReference;
+import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.FirebaseFirestore;
 
 import java.util.ArrayList;
@@ -120,27 +123,44 @@ public class SetScheduleActivity extends AppCompatActivity {
 
     public void setSchedule(View view) {
         timeSelected = (String) timeText.getText();
-        Map<String, String> schedule = new HashMap<>();
-        for (String day : checkedBoxes) {
-            schedule.put(day, timeSelected);
-        }
-        userRef.update(
-                "schedule", schedule)
-                .addOnSuccessListener(new OnSuccessListener<Void>() {
-                    @Override
-                    public void onSuccess(Void aVoid) {
-                        Toast.makeText(getApplicationContext(), "Schedule Updated",
+        userRef.get().addOnCompleteListener(new OnCompleteListener<DocumentSnapshot>() {
+            @Override
+            public void onComplete(@NonNull Task<DocumentSnapshot> task) {
+                if (task.isSuccessful()) {
+                    DocumentSnapshot document = task.getResult();
+                    if (document.exists()) {
+                        Map<String, String> scheduleData = (HashMap<String, String>) document.getData().get("schedule");
+                        for (String day : checkedBoxes) {
+                            scheduleData.put(day, timeSelected);
+                        }
+                        userRef.update(
+                                "schedule", scheduleData)
+                                .addOnSuccessListener(new OnSuccessListener<Void>() {
+                                    @Override
+                                    public void onSuccess(Void aVoid) {
+                                        Toast.makeText(getApplicationContext(), "Schedule Updated",
+                                                Toast.LENGTH_SHORT).show();
+                                    }
+                                })
+                                .addOnFailureListener(new OnFailureListener() {
+                                    @Override
+                                    public void onFailure(@NonNull Exception e) {
+                                        Toast.makeText(getApplicationContext(), "Schedule Update Failed",
+                                                Toast.LENGTH_SHORT).show();
+                                        Log.w("UpdateError", "Error updating document", e);
+                                    }
+                                });
+                    } else {
+                        Toast.makeText(getApplicationContext(), "Document Doesn't Exist. Somehow.",
                                 Toast.LENGTH_SHORT).show();
                     }
-                })
-                .addOnFailureListener(new OnFailureListener() {
-                    @Override
-                    public void onFailure(@NonNull Exception e) {
-                        Toast.makeText(getApplicationContext(), "Schedule Update Failed",
-                                Toast.LENGTH_SHORT).show();
-                        Log.w("UpdateError", "Error updating document", e);
-                    }
-                });
+                } else {
+                    Toast.makeText(getApplicationContext(), "Task Unsuccessful",
+                            Toast.LENGTH_SHORT).show();
+                }
+            }
+        });
+
         Intent intent = new Intent(this, FacultyDashboardActivity.class);
         startActivity(intent);
     }
