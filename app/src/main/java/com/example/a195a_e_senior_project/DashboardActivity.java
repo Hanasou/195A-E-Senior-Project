@@ -83,7 +83,7 @@ public class DashboardActivity extends AppCompatActivity {
     public void signOut(View view) {
         // This signOut method is part of the FirebaseAuth object.
         mAuth.signOut();
-        Intent intent = new Intent(this, MainActivity.class);
+        Intent intent = new Intent(this, SignInActivity.class);
         startActivity(intent);
     }
 
