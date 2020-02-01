@@ -41,5 +41,6 @@
     <string name="set_time">Set Time</string>
     <string name="current_schedule">Current Schedule</string>
     <string name="delete_selected">Delete Selected</string>
+    <string name="appointments">Appointments</string>
     >>>>>>> please work
 </resources>

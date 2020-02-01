@@ -34,7 +34,9 @@ import com.google.firebase.firestore.QuerySnapshot;
 
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
+import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
+import java.time.format.FormatStyle;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Date;
@@ -65,6 +67,7 @@ public class RegisterAppointmentActivity extends AppCompatActivity {
     private DocumentReference advisorRef;
     private CollectionReference usersRef;
     private CollectionReference inboxRef;
+    private CollectionReference userAppointmentsRef;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -232,13 +235,39 @@ public class RegisterAppointmentActivity extends AppCompatActivity {
 
     public void makeAppointment(View view) throws ParseException {
         dateSelected = (String) dateText.getText() + blockSelected.substring(blockSelected.indexOf(' '));
+        // Use LocalDate object to check if DayOfWeek matches advisor's office hours
+        // Use Date object to add into Database
+
+        // Use LocalDate object to see if the date that the user chose is valid.
+        LocalDate checkDate = LocalDate.parse(dateText.getText().toString(), DateTimeFormatter.ofPattern("MM/dd/yyyy"));
+        String openDay = (String) advisingBlock.getSelectedItem();
+        openDay = openDay.substring(0, openDay.indexOf(' ')).toUpperCase();
+        Log.d("Day of Appointment", openDay);
+        Log.d("Day Selected", checkDate.getDayOfWeek().toString());
+        if (!checkDate.getDayOfWeek().toString().equals(openDay)){
+            Toast.makeText(getApplicationContext(), "Choose Correct Day Of Week",
+                    Toast.LENGTH_SHORT).show();
+            return;
+        }
+        if (checkDate.isBefore(LocalDate.now())) {
+            Toast.makeText(getApplicationContext(), "Choose Date After Now",
+                    Toast.LENGTH_SHORT).show();
+            return;
+        }
         Log.d("Time String", dateSelected);
         Date date = new SimpleDateFormat("MM/dd/yyyy HH:mm").parse(dateSelected);
         Log.d("Date", date.toString());
+
+        // Add the appointment information into the database. One for the advisor, one for the user.
         inboxRef = advisorRef.collection("inbox");
+        userAppointmentsRef = userRef.collection("appointments");
         Map<String, Object> appointmentRequest = new HashMap<String, Object>();
         appointmentRequest.put("name", user.getDisplayName());
         appointmentRequest.put("date", new Timestamp(date));
+
+        Map<String, Object> appointmentUser = new HashMap<String, Object>();
+        appointmentUser.put("name", advisorSelected);
+        appointmentUser.put("date", new Timestamp(date));
 
         inboxRef.document(user.getDisplayName())
                 .set(appointmentRequest)
@@ -255,7 +284,22 @@ public class RegisterAppointmentActivity extends AppCompatActivity {
                     }
                 });
 
-        Intent intent = new Intent(this, AdvisingHubActivity.class);
+        userAppointmentsRef.document(advisorSelected)
+                .set(appointmentUser)
+                .addOnSuccessListener(new OnSuccessListener<Void>() {
+                    @Override
+                    public void onSuccess(Void aVoid) {
+                        Log.d("DocWrite", "DocumentSnapshot successfully written!");
+                    }
+                })
+                .addOnFailureListener(new OnFailureListener() {
+                    @Override
+                    public void onFailure(@NonNull Exception e) {
+                        Log.w("DocWrite", "Error writing document", e);
+                    }
+                });
+
+        Intent intent = new Intent(this, DashboardActivity.class);
         startActivity(intent);
     }
 
@@ -284,11 +328,18 @@ public class RegisterAppointmentActivity extends AppCompatActivity {
             // Do something with the date chosen by the user
             StringBuilder builder = new StringBuilder();
             int actualMonth = month + 1;
+            if (actualMonth < 10) {
+                builder.append(0);
+            }
             builder.append(actualMonth + "/");
+            if (day < 10) {
+                builder.append(0);
+            }
             builder.append(day + "/");
             builder.append(year);
             TextView dateText = (TextView) getActivity().findViewById(R.id.selectedDate);
             dateText.setText(builder.toString());
+            dateText.setVisibility(VISIBLE);
         }
     }
 }

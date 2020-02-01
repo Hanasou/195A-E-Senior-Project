@@ -21,6 +21,7 @@ import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.android.gms.tasks.Task;
 import com.google.android.material.resources.TextAppearance;
+import com.google.firebase.Timestamp;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.firestore.CollectionReference;
@@ -31,10 +32,14 @@ import com.google.firebase.firestore.QueryDocumentSnapshot;
 import com.google.firebase.firestore.QuerySnapshot;
 
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+/**
+ * Activity for Faculty viewing their schedule.
+ */
 public class ViewScheduleActivity extends AppCompatActivity {
 
     private FirebaseAuth mAuth;
@@ -58,6 +63,8 @@ public class ViewScheduleActivity extends AppCompatActivity {
     public boolean onOptionsItemSelected(@NonNull MenuItem item) {
         switch (item.getItemId()) {
             case R.id.navigation_home:
+                Intent homeIntent = new Intent(this, FacultyDashboardActivity.class);
+                startActivity(homeIntent);
                 return true;
 
             case R.id.navigation_dashboard:
@@ -182,27 +189,55 @@ public class ViewScheduleActivity extends AppCompatActivity {
                                     @Override
                                     public void onComplete(@NonNull Task<QuerySnapshot> task) {
                                         if (task.isSuccessful()) {
+                                            List<String> expiredAppointments = new ArrayList<String>();
                                             for (QueryDocumentSnapshot document : task.getResult()) {
                                                 Log.d("DocGet", document.getId() + " => " + document.getData());
                                                 Map<String, Object> appointmentData = document.getData();
-                                                CheckBox appointmentText = new CheckBox(getApplicationContext());
-                                                appointmentText.setText(appointmentData.get("name").toString() + "\n" +
-                                                        appointmentData.get("date").toString());
-                                                schedule.addView(appointmentText);
-                                                appointmentText.setOnClickListener(new View.OnClickListener() {
-                                                    @Override
-                                                    public void onClick(View v) {
-                                                        boolean checked = ((CheckBox) v).isChecked();
-                                                        String boxText = ((CheckBox) v).getText().toString();
-                                                        appointmentKey = boxText.substring(0, boxText.indexOf('\n'));
-                                                        if (checked) {
-                                                            removedAppointments.add(appointmentKey);
+                                                Date appointmentDate = ((Timestamp) appointmentData.get("date")).toDate();
+
+                                                // If the appointment has not expired yet, add it to the view.
+                                                if (appointmentDate.after(new Date())) {
+                                                    CheckBox appointmentText = new CheckBox(getApplicationContext());
+                                                    appointmentText.setText(appointmentData.get("name").toString() + "\n" +
+                                                            appointmentData.get("date").toString());
+                                                    schedule.addView(appointmentText);
+                                                    appointmentText.setOnClickListener(new View.OnClickListener() {
+                                                        @Override
+                                                        public void onClick(View v) {
+                                                            boolean checked = ((CheckBox) v).isChecked();
+                                                            String boxText = ((CheckBox) v).getText().toString();
+                                                            appointmentKey = boxText.substring(0, boxText.indexOf('\n'));
+                                                            if (checked) {
+                                                                removedAppointments.add(appointmentKey);
+                                                            }
+                                                            else {
+                                                                removedAppointments.remove(appointmentKey);
+                                                            }
                                                         }
-                                                        else {
-                                                            removedAppointments.remove(appointmentKey);
-                                                        }
-                                                    }
-                                                });
+                                                    });
+                                                }
+                                                // Otherwise, add it to the list of expired appointments.
+                                                else {
+                                                    expiredAppointments.add(document.getId());
+                                                }
+                                            }
+
+                                            // Delete all expired appointments
+                                            for (String appointmentId : expiredAppointments) {
+                                                inboxRef.document(appointmentId)
+                                                        .delete()
+                                                        .addOnSuccessListener(new OnSuccessListener<Void>() {
+                                                            @Override
+                                                            public void onSuccess(Void aVoid) {
+                                                                Log.d("DeletionStatus", "DocumentSnapshot successfully deleted!");
+                                                            }
+                                                        })
+                                                        .addOnFailureListener(new OnFailureListener() {
+                                                            @Override
+                                                            public void onFailure(@NonNull Exception e) {
+                                                                Log.w("DeletionStatus", "Error deleting document", e);
+                                                            }
+                                                        });
                                             }
                                         } else {
                                             Log.d("DocGet", "Error getting documents: ", task.getException());

@@ -10,11 +10,16 @@ import android.widget.TextView;
 import com.example.a195a_e_senior_project.classes.User;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
+import com.google.firebase.firestore.CollectionReference;
+import com.google.firebase.firestore.DocumentReference;
+import com.google.firebase.firestore.FirebaseFirestore;
 
 public class FacultyDashboardActivity extends AppCompatActivity {
     private FirebaseAuth mAuth;
     private FirebaseUser user;
-    private User currentUser;
+    private FirebaseFirestore db;
+    private DocumentReference userRef;
+    private CollectionReference inboxRef;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -23,9 +28,15 @@ public class FacultyDashboardActivity extends AppCompatActivity {
 
         mAuth = FirebaseAuth.getInstance();
         user = mAuth.getCurrentUser();
-        currentUser = new User(user);
+        db = FirebaseFirestore.getInstance();
+        userRef = db.collection("users").document(user.getEmail());
+        inboxRef = userRef.collection("inbox");
+
+        // Display Welcome Message
         TextView welcomeMessage = (TextView) findViewById(R.id.welcomeMessage);
-        welcomeMessage.setText("Welcome " + currentUser.getName());
+        welcomeMessage.setText("Welcome " + user.getDisplayName());
+
+        // TODO: Delete all expired appointments when user starts up their dashboard
     }
 
     public void currentSchedule(View view) {
