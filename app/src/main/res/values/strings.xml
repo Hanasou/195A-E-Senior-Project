@@ -8,6 +8,10 @@
         <item>Faculty</item>
         <item>Student</item>
     </string-array>
+    <string-array name="school">
+        <item>San Jose State University</item>
+    </string-array>
+    <string name="role_text">Choose a role...</string>
     <string name="Cancel">Cancel</string>
     <string name="login">Login</string>
     <string name="next">Next</string>
@@ -36,4 +40,16 @@
     <string name="submit">Submit</string>
     <string name="advising_hub">Advising Hub</string>
     <string name="community">Community</string>
+    <string-array name="department">
+        <item>Computer Engineering</item>
+        <item>Computer Science</item>
+    </string-array>
+    <string-array name="CMPE">
+        <item>Computer Engineering</item>
+        <item>Software Engineering</item>
+    </string-array>
+    <string-array name="program">
+        <item>UnderGraduate</item>
+        <item>Graduate</item>
+    </string-array>
 </resources>

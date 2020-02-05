@@ -7,28 +7,77 @@
     tools:context=".MainActivity"
     android:background="#93DCFF">
 
+    <Spinner
+        android:id="@+id/school"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="80dp"
+        android:layout_marginTop="200dp"
+        android:layout_marginEnd="80dp"
+        android:background="@android:drawable/btn_dropdown"
+        android:spinnerMode="dropdown"
+        android:entries="@array/school"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
+
+    <com.google.android.material.textfield.TextInputLayout
+        android:id="@+id/emailLayout"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="16dp"
+        android:layout_marginStart="100dp"
+        android:layout_marginEnd="100dp"
+        app:layout_constraintTop_toBottomOf="@+id/school">
+        <EditText
+            android:id="@+id/email"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:ems="10"
+            android:autofillHints=""
+            android:hint="@string/prompt_email"
+            android:inputType="textEmailAddress"
+            android:background="#FFFFFF"/>
+    </com.google.android.material.textfield.TextInputLayout>
+
+    <com.google.android.material.textfield.TextInputLayout
+        android:id="@+id/passwordLayout"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="16dp"
+        android:layout_marginStart="100dp"
+        android:layout_marginEnd="100dp"
+        app:layout_constraintTop_toBottomOf="@+id/emailLayout">
+        <EditText
+            android:id="@+id/password"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:ems="10"
+            android:autofillHints=""
+            android:hint="@string/prompt_password"
+            android:inputType="textPassword"
+            android:background="#FFFFFF"/>
+    </com.google.android.material.textfield.TextInputLayout>
 
     <Button
         android:id="@+id/signUp"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginTop="200dp"
+        android:layout_marginTop="50dp"
         android:onClick="signUp"
         android:text="@string/sign_up"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.498"
+        app:layout_constraintHorizontal_bias="0.3"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent" />
+        app:layout_constraintTop_toBottomOf="@+id/passwordLayout" />
 
     <Button
         android:id="@+id/username"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginTop="16dp"
+        android:layout_marginTop="50dp"
+        android:layout_marginLeft="40dp"
         android:onClick="signIn"
         android:text="@string/common_signin_button_text"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.498"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/signUp" />
+        app:layout_constraintTop_toBottomOf="@+id/passwordLayout"
+        app:layout_constraintLeft_toRightOf="@+id/signUp" />
 </androidx.constraintlayout.widget.ConstraintLayout>
