@@ -35,6 +35,9 @@ import java.util.Map;
 
 import static android.view.View.VISIBLE;
 
+/**
+ * User can register for a specific college and department here.
+ */
 public class DepartmentRegistrationActivity extends AppCompatActivity {
 
     private FirebaseAuth mAuth;

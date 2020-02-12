@@ -6,6 +6,9 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.view.View;
 
+/**
+ * Where advising related activities are located.
+ */
 public class AdvisingHubActivity extends AppCompatActivity {
 
     @Override

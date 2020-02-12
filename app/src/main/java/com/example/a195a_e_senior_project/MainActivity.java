@@ -9,7 +9,6 @@ import android.util.Log;
 import android.view.View;
 import android.widget.Toast;
 
-import com.example.a195a_e_senior_project.classes.User;
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
 import com.google.firebase.auth.FirebaseAuth;
@@ -18,6 +17,11 @@ import com.google.firebase.firestore.DocumentReference;
 import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.FirebaseFirestore;
 
+/**
+ * Activity that gets launched when app gets started.
+ * If the user is logged in, they get redirected to their Dashboard.
+ * If they're not logged in, they get prompted to log in or sign up.
+ */
 public class MainActivity extends AppCompatActivity {
 
     private FirebaseAuth mAuth;

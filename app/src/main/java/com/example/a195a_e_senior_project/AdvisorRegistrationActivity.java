@@ -29,6 +29,9 @@ import java.util.List;
 import static android.view.View.INVISIBLE;
 import static android.view.View.VISIBLE;
 
+/**
+ * Faculty members can register to be an advisor here.
+ */
 public class AdvisorRegistrationActivity extends AppCompatActivity {
 
     private FirebaseAuth mAuth;

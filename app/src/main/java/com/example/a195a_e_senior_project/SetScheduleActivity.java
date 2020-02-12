@@ -33,6 +33,10 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+/**
+ * Faculty can configure their open office hours here.
+ * Office hours designate when users can sign up for appointments.
+ */
 public class SetScheduleActivity extends AppCompatActivity {
 
     private FirebaseAuth mAuth;

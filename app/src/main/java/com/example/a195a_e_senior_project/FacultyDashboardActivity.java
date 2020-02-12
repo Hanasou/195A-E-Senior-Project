@@ -7,13 +7,15 @@ import android.os.Bundle;
 import android.view.View;
 import android.widget.TextView;
 
-import com.example.a195a_e_senior_project.classes.User;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.firestore.CollectionReference;
 import com.google.firebase.firestore.DocumentReference;
 import com.google.firebase.firestore.FirebaseFirestore;
 
+/**
+ * Dashboard for faculty members.
+ */
 public class FacultyDashboardActivity extends AppCompatActivity {
     private FirebaseAuth mAuth;
     private FirebaseUser user;

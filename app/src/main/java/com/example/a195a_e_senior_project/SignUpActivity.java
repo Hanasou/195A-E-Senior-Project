@@ -31,6 +31,9 @@ import java.util.Map;
 
 import static android.view.View.VISIBLE;
 
+/**
+ * User registers an account here.
+ */
 public class SignUpActivity extends AppCompatActivity {
 
     private FirebaseAuth mAuth;

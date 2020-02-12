@@ -9,7 +9,6 @@ import android.util.Log;
 import android.view.View;
 import android.widget.TextView;
 
-import com.example.a195a_e_senior_project.classes.User;
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.OnSuccessListener;
@@ -27,6 +26,9 @@ import java.util.Date;
 import java.util.List;
 import java.util.Map;
 
+/**
+ * Normal User Dashboard Activity. They should be able to navigate to various functions here. May need to migrate.
+ */
 public class DashboardActivity extends AppCompatActivity {
 
     private FirebaseAuth mAuth;

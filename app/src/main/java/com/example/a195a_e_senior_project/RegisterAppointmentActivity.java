@@ -47,6 +47,9 @@ import java.util.Map;
 import static android.view.View.INVISIBLE;
 import static android.view.View.VISIBLE;
 
+/**
+ * User can register for appointments with an advisor here.
+ */
 public class RegisterAppointmentActivity extends AppCompatActivity {
 
     private FirebaseAuth mAuth;
