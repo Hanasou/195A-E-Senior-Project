@@ -1,19 +1,32 @@
 package com.example.a195a_e_senior_project;
 
+import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 
 import android.content.Intent;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.View;
+import android.widget.Toast;
 
+import com.google.android.gms.tasks.OnCompleteListener;
+import com.google.android.gms.tasks.Task;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
+import com.google.firebase.firestore.DocumentReference;
+import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.FirebaseFirestore;
 
+/**
+ * Activity that gets launched when app gets started.
+ * If the user is logged in, they get redirected to their Dashboard.
+ * If they're not logged in, they get prompted to log in or sign up.
+ */
 public class MainActivity extends AppCompatActivity {
 
     private FirebaseAuth mAuth;
     private FirebaseFirestore db;
+    private DocumentReference userRef;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -35,9 +48,31 @@ public class MainActivity extends AppCompatActivity {
 
     public void updateUI(FirebaseUser user) {
         if (user != null) {
-            // Redirect user to their Dashboard if they are authenticated.
-            Intent intent = new Intent(this, DashboardActivity.class);
-            startActivity(intent);
+            userRef = db.collection("users").document(user.getEmail());
+            userRef.get().addOnCompleteListener(new OnCompleteListener<DocumentSnapshot>() {
+                @Override
+                public void onComplete(@NonNull Task<DocumentSnapshot> task) {
+                    if (task.isSuccessful()) {
+                        DocumentSnapshot document = task.getResult();
+                        if (document.exists()) {
+                            boolean isFaculty = (boolean) document.getData().get("isFaculty");
+                            if (isFaculty) {
+                                Intent intent = new Intent(MainActivity.this, FacultyDashboardActivity.class);
+                                startActivity(intent);
+                            }
+                            else {
+                                Intent intent = new Intent(MainActivity.this, DashboardActivity.class);
+                                startActivity(intent);
+                            }
+                        } else {
+                            Log.d("Document ", "Does not exist");
+                        }
+                    } else {
+                        Log.d("Failure ", "get failed with ", task.getException());
+                    }
+                }
+            });
+
         }
         else {
             // Use this page if they are not authenticated.

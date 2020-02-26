@@ -1,81 +1,64 @@
 package com.example.a195a_e_senior_project;
 
-import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 
 import android.content.Intent;
 import android.os.Bundle;
-import android.util.Log;
 import android.view.View;
 import android.widget.TextView;
 
-import com.google.android.gms.tasks.OnCompleteListener;
-import com.google.android.gms.tasks.OnFailureListener;
-import com.google.android.gms.tasks.OnSuccessListener;
-import com.google.android.gms.tasks.Task;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.firestore.CollectionReference;
 import com.google.firebase.firestore.DocumentReference;
 import com.google.firebase.firestore.FirebaseFirestore;
-import com.google.firebase.firestore.QueryDocumentSnapshot;
-import com.google.firebase.firestore.QuerySnapshot;
-
-import java.util.ArrayList;
-import java.util.Date;
-import java.util.List;
-import java.util.Map;
 
 /**
- * Normal User Dashboard Activity. They should be able to navigate to various functions here. May need to migrate.
+ * Dashboard for faculty members.
  */
-public class DashboardActivity extends AppCompatActivity {
-
+public class FacultyDashboardActivity extends AppCompatActivity {
     private FirebaseAuth mAuth;
     private FirebaseUser user;
     private FirebaseFirestore db;
     private DocumentReference userRef;
-    private CollectionReference appointmentsRef;
+    private CollectionReference inboxRef;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_dashboard);
+        setContentView(R.layout.activity_faculty_dashboard);
 
-        // Initialize variables
         mAuth = FirebaseAuth.getInstance();
         user = mAuth.getCurrentUser();
         db = FirebaseFirestore.getInstance();
         userRef = db.collection("users").document(user.getEmail());
-        appointmentsRef = userRef.collection("appointments");
+        inboxRef = userRef.collection("inbox");
 
         // Display Welcome Message
         TextView welcomeMessage = (TextView) findViewById(R.id.welcomeMessage);
         welcomeMessage.setText("Welcome " + user.getDisplayName());
 
+        // TODO: Delete all expired appointments when user starts up their dashboard
     }
 
+    public void currentSchedule(View view) {
+        Intent intent = new Intent(this, ViewScheduleActivity.class);
+        startActivity(intent);
+    }
     /**
-     * Navigate to the register department activity.
+     * Configures weekly open office hours for advisors
      * @param view
      */
-    public void registerDepartment(View view) {
-        Intent intent = new Intent(this, DepartmentRegistrationActivity.class);
+    public void setSchedule(View view) {
+        Intent intent = new Intent(this, SetScheduleActivity.class);
         startActivity(intent);
     }
 
-    /**
-     * Navigates to advising hub activity.
-     */
-    public void advisingHub(View view) {
-        Intent intent = new Intent(this, AdvisingHubActivity.class);
+    public void advisorRegistration(View view) {
+        Intent intent = new Intent(this, AdvisorRegistrationActivity.class);
         startActivity(intent);
     }
 
-    public void viewAppointments(View view) {
-        Intent intent = new Intent(this, StudentViewAppointmentsActivity.class);
-        startActivity(intent);
-    }
     /**
      * Signs the user out
      * @param view
@@ -86,5 +69,4 @@ public class DashboardActivity extends AppCompatActivity {
         Intent intent = new Intent(this, MainActivity.class);
         startActivity(intent);
     }
-
 }

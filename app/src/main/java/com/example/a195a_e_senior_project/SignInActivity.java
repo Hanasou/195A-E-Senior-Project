@@ -17,6 +17,9 @@ import com.google.firebase.auth.AuthResult;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 
+/**
+ * User can sign in with an account here.
+ */
 public class SignInActivity extends AppCompatActivity {
 
     private FirebaseAuth mAuth;
