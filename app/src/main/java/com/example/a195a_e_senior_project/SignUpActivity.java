@@ -118,6 +118,8 @@ public class SignUpActivity extends AppCompatActivity {
                                 addUser.put("first", firstNameString);
                                 addUser.put("last", lastNameString);
                                 addUser.put("isFaculty", false);
+                                addUser.put("college", "Undeclared");
+                                addUser.put("department", "Undeclared");
                                 db.collection("users").document(usernameString)
                                         .set(addUser)
                                         .addOnSuccessListener(new OnSuccessListener<Void>() {

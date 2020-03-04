@@ -10,6 +10,7 @@ import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
+import android.widget.CalendarView;
 import android.widget.CheckBox;
 import android.widget.CheckedTextView;
 import android.widget.LinearLayout;
@@ -46,6 +47,7 @@ public class ViewScheduleActivity extends AppCompatActivity {
     private FirebaseUser user;
     private FirebaseFirestore db;
     private LinearLayout schedule;
+    private CalendarView calendar;
     private DocumentReference userRef;
     private CollectionReference inboxRef;
     private List<String> removedBlocks;
@@ -147,6 +149,7 @@ public class ViewScheduleActivity extends AppCompatActivity {
         mAuth = FirebaseAuth.getInstance();
         user = mAuth.getCurrentUser();
         schedule = findViewById(R.id.scheduleLayout);
+        calendar = findViewById(R.id.calendar);
         db = FirebaseFirestore.getInstance();
         userRef = db.collection("users").document(user.getEmail());
         inboxRef = userRef.collection("inbox");

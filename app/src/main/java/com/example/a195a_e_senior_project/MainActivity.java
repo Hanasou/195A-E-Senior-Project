@@ -3,7 +3,10 @@ package com.example.a195a_e_senior_project;
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 
+import android.app.NotificationChannel;
+import android.app.NotificationManager;
 import android.content.Intent;
+import android.os.Build;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
@@ -28,6 +31,8 @@ public class MainActivity extends AppCompatActivity {
     private FirebaseFirestore db;
     private DocumentReference userRef;
 
+    public static final String CHANNEL_ID = "com.example.a195a_e_senior_project";
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -36,6 +41,9 @@ public class MainActivity extends AppCompatActivity {
         // Initialize FirebaseAuth instance
         mAuth = FirebaseAuth.getInstance();
         db = FirebaseFirestore.getInstance();
+
+        // Create the notification channel to send notifications.
+        createNotificationChannel();
     }
 
     @Override
@@ -98,5 +106,21 @@ public class MainActivity extends AppCompatActivity {
     public void signIn(View view) {
         Intent intent = new Intent(this, SignInActivity.class);
         startActivity(intent);
+    }
+
+    private void createNotificationChannel() {
+        // Create the NotificationChannel, but only on API 26+ because
+        // the NotificationChannel class is new and not in the support library
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
+            CharSequence name = "Test Notification Channel";
+            String description = "Test Notification Description";
+            int importance = NotificationManager.IMPORTANCE_DEFAULT;
+            NotificationChannel channel = new NotificationChannel(CHANNEL_ID, name, importance);
+            channel.setDescription(description);
+            // Register the channel with the system; you can't change the importance
+            // or other notification behaviors after this
+            NotificationManager notificationManager = getSystemService(NotificationManager.class);
+            notificationManager.createNotificationChannel(channel);
+        }
     }
 }

@@ -42,5 +42,8 @@
     <string name="current_schedule">Current Schedule</string>
     <string name="delete_selected">Delete Selected</string>
     <string name="appointments">Appointments</string>
+    <string name="forum">Forum</string>
+    <string name="view_appointments">View Appointments</string>
+    <string name="view_notifications">View Notifications</string>
     >>>>>>> please work
 </resources>
