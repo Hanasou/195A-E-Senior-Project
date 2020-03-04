@@ -6,6 +6,9 @@ import androidx.appcompat.app.AppCompatActivity;
 import android.content.Intent;
 import android.os.Bundle;
 import android.util.Log;
+import android.view.Menu;
+import android.view.MenuInflater;
+import android.view.MenuItem;
 import android.view.View;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
@@ -41,6 +44,7 @@ import static android.view.View.VISIBLE;
 public class DepartmentRegistrationActivity extends AppCompatActivity {
 
     private FirebaseAuth mAuth;
+    private FirebaseUser user;
     private FirebaseFirestore db;
     private Spinner collegeSearch;
     private Spinner departmentSearch;
@@ -52,12 +56,47 @@ public class DepartmentRegistrationActivity extends AppCompatActivity {
     private DocumentReference userRef;
 
     @Override
+    public boolean onCreateOptionsMenu(Menu menu) {
+        MenuInflater menuInflater = new MenuInflater(this);
+        menuInflater.inflate(R.menu.bottom_nav_menu, menu);
+        return super.onCreateOptionsMenu(menu);
+    }
+
+    @Override
+    public boolean onOptionsItemSelected(@NonNull MenuItem item) {
+        switch (item.getItemId()) {
+            case R.id.navigation_home:
+                Intent homeIntent = new Intent(this, FacultyDashboardActivity.class);
+                startActivity(homeIntent);
+                return true;
+
+            case R.id.navigation_advising:
+                return true;
+
+            case R.id.navigation_forum:
+                return true;
+
+            case R.id.navigation_notifications:
+                Intent notificationIntent = new Intent(this, NotificationsActivity.class);
+                startActivity(notificationIntent);
+                return true;
+
+            default:
+                // If we got here, the user's action was not recognized.
+                // Invoke the superclass to handle it.
+                return super.onOptionsItemSelected(item);
+
+        }
+    }
+
+    @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_department_registration);
 
         // Initialize global variables
         mAuth = FirebaseAuth.getInstance();
+        user = mAuth.getCurrentUser();
         db = FirebaseFirestore.getInstance();
         collegeSelected = "";
         departmentSelected = "";
@@ -181,8 +220,7 @@ public class DepartmentRegistrationActivity extends AppCompatActivity {
      * @param view
      */
     public void registerCollege(View view) {
-        FirebaseUser currUser = mAuth.getCurrentUser();
-        userRef = db.collection("users").document(currUser.getEmail());
+        userRef = db.collection("users").document(user.getEmail());
         userRef.update(
                 "college", collegeSelected,
                 "department", departmentSelected)

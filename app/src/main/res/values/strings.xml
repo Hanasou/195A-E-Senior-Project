@@ -85,4 +85,9 @@
     <string name="profile_fragment">Profile Fragment</string>
     <string name="terms_conditions_fragment"><![CDATA[Terms & Conditions Fragment]]></string>
     <string name="terms_condtions"><![CDATA[Terms & Condtions]]></string>
+    <string name="forum">Forum</string>
+    <string name="view_appointments">View Appointments</string>
+    <string name="view_notifications">View Notifications</string>
+    >>>>>>> please work
+>>>>>>> maybe complete
 </resources>

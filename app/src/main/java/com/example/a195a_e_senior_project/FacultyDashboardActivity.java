@@ -59,6 +59,11 @@ public class FacultyDashboardActivity extends AppCompatActivity {
         startActivity(intent);
     }
 
+    public void viewNotifications(View view) {
+        Intent intent = new Intent(this, NotificationsActivity.class);
+        startActivity(intent);
+    }
+
     /**
      * Signs the user out
      * @param view

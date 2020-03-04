@@ -76,6 +76,11 @@ public class DashboardActivity extends AppCompatActivity {
         Intent intent = new Intent(this, StudentViewAppointmentsActivity.class);
         startActivity(intent);
     }
+
+    public void viewNotifications(View view) {
+        Intent intent = new Intent(this, NotificationsActivity.class);
+        startActivity(intent);
+    }
     /**
      * Signs the user out
      * @param view
