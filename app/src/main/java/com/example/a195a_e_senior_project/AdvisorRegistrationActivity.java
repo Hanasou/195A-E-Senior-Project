@@ -101,6 +101,7 @@ public class AdvisorRegistrationActivity extends AppCompatActivity {
         departments = (Spinner) findViewById(R.id.departments);
         submitButton = (Button) findViewById(R.id.submit);
 
+        // TODO: Currently hardcoded. Should retrieve category info from database.
         List<String> categories = new ArrayList<String>();
         categories.add("Athletics");
         categories.add("GE Requirements");

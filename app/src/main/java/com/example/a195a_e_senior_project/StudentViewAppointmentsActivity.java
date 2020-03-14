@@ -2,6 +2,7 @@ package com.example.a195a_e_senior_project;
 
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.fragment.app.DialogFragment;
 
 import android.content.Intent;
 import android.os.Bundle;
@@ -10,11 +11,14 @@ import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
+import android.widget.ArrayAdapter;
 import android.widget.CalendarView;
 import android.widget.CheckBox;
 import android.widget.LinearLayout;
+import android.widget.ListView;
 import android.widget.TextView;
 
+import com.example.a195a_e_senior_project.dialogs.CancelAppointmentDialog;
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.OnSuccessListener;
@@ -36,13 +40,12 @@ import java.util.Map;
 /**
  * Students viewing their registered appointments.
  */
-public class StudentViewAppointmentsActivity extends AppCompatActivity {
+public class StudentViewAppointmentsActivity extends AppCompatActivity implements CancelAppointmentDialog.CancelAppointmentDialogListener{
 
     private FirebaseAuth mAuth;
     private FirebaseUser user;
     private FirebaseFirestore db;
-    private LinearLayout schedule;
-    private CalendarView calendar;
+    private ListView appointmentsView;
     private DocumentReference userRef;
     private CollectionReference appointmentsRef;
 
@@ -87,12 +90,14 @@ public class StudentViewAppointmentsActivity extends AppCompatActivity {
 
         mAuth = FirebaseAuth.getInstance();
         user = mAuth.getCurrentUser();
-        schedule = findViewById(R.id.scheduleLayout);
-        calendar = findViewById(R.id.calendar);
         db = FirebaseFirestore.getInstance();
+        appointmentsView = findViewById(R.id.appointmentsView);
         userRef = db.collection("users").document(user.getEmail());
         appointmentsRef = userRef.collection("appointments");
 
+        final List<String> appointmentsList = new ArrayList<String>();
+        // TODO: Refactor this activity to use ListView. Let students cancel their appointments.
+        // refer to ViewScheduleActivity to see how to do it.
         appointmentsRef.get()
                 .addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
                     @Override
@@ -101,15 +106,13 @@ public class StudentViewAppointmentsActivity extends AppCompatActivity {
                             List<String> removedAppointments = new ArrayList<String>();
                             for (QueryDocumentSnapshot document : task.getResult()) {
                                 Log.d("DocGet", document.getId() + " => " + document.getData());
-                                Map<String, Object> appointmentData = document.getData();
-                                Date appointmentDate = ((Timestamp) appointmentData.get("date")).toDate();
+                                Date appointmentDate = ((Timestamp) document.get("date")).toDate();
 
                                 // If the appointment has not expired yet, add it to the view.
                                 if (appointmentDate.after(new Date())) {
-                                    TextView appointmentText = new TextView(getApplicationContext());
-                                    appointmentText.setText(appointmentData.get("name").toString() + "\n" +
+                                    appointmentsList.add(document.get("name").toString() + "\n" +
+                                            document.get("email") + "\n" +
                                             appointmentDate.toString());
-                                    schedule.addView(appointmentText);
                                 }
                                 // Otherwise, put it in the removed list so it can be deleted later.
                                 else {
@@ -119,25 +122,66 @@ public class StudentViewAppointmentsActivity extends AppCompatActivity {
 
                             // Delete the expired appointments that got added in removedAppointments earlier.
                             for (String appointmentId : removedAppointments) {
-                                appointmentsRef.document(appointmentId)
-                                        .delete()
-                                        .addOnSuccessListener(new OnSuccessListener<Void>() {
-                                            @Override
-                                            public void onSuccess(Void aVoid) {
-                                                Log.d("DeletionStatus", "DocumentSnapshot successfully deleted!");
-                                            }
-                                        })
-                                        .addOnFailureListener(new OnFailureListener() {
-                                            @Override
-                                            public void onFailure(@NonNull Exception e) {
-                                                Log.w("DeletionStatus", "Error deleting document", e);
-                                            }
-                                        });
+                                deleteAppointment(appointmentId);
                             }
+                            ArrayAdapter<String> appointmentsAdapter = new ArrayAdapter<String>(StudentViewAppointmentsActivity.this,
+                                    android.R.layout.simple_selectable_list_item, appointmentsList);
+                            appointmentsView.setAdapter(appointmentsAdapter);
                         } else {
                             Log.d("DocGet", "Error getting documents: ", task.getException());
                         }
                     }
                 });
+    }
+
+    public void deleteAppointment(String key) {
+        final String facultyEmail = key;
+        appointmentsRef.document(facultyEmail)
+                .delete()
+                .addOnSuccessListener(new OnSuccessListener<Void>() {
+                    @Override
+                    public void onSuccess(Void aVoid) {
+                        final String thisEmail = user.getEmail();
+                        Log.d("DeletionStatus", "Student copy DocumentSnapshot successfully deleted!");
+                        DocumentReference facultyRef = db.collection("users").document(facultyEmail);
+                        CollectionReference inboxRef = facultyRef.collection("inbox");
+
+                        inboxRef.document(thisEmail)
+                                .delete()
+                                .addOnSuccessListener(new OnSuccessListener<Void>() {
+                                    public void onSuccess(Void aVoid) {
+                                        Log.d("DeletionStatus", "Student copy DocumentSnapshot successfully deleted!");
+                                    }
+                                })
+                                .addOnFailureListener(new OnFailureListener() {
+                                    public void onFailure(@NonNull Exception e) {
+                                        Log.w("DeletionStatus", "Error deleting student's document", e);
+                                    }
+                                });
+                    }
+                })
+                .addOnFailureListener(new OnFailureListener() {
+                    @Override
+                    public void onFailure(@NonNull Exception e) {
+                        Log.w("DeletionStatus", "Error deleting document", e);
+                    }
+                });
+    }
+
+    public void showCancellationDialog() {
+        DialogFragment dialog = new CancelAppointmentDialog();
+        dialog.show(getSupportFragmentManager(), "CancelDialogFragment");
+    }
+
+    @Override
+    public void onDialogPositiveClick(DialogFragment dialog) {
+        // User touched the dialog's positive button
+        //deleteAppointment(appointmentKey);
+    }
+
+    @Override
+    public void onDialogNegativeClick(DialogFragment dialog) {
+        // User touched the dialog's negative button
+
     }
 }

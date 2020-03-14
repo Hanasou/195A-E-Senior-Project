@@ -69,6 +69,7 @@ public class RegisterAppointmentActivity extends AppCompatActivity {
     private TextView dateText;
     private String advisingOptionSelected;
     private String advisorSelected;
+    private String advisorSelectedEmail;
     private String blockSelected;
     private String dateSelected;
     private Map<String, String> advisorSchedule;
@@ -278,8 +279,8 @@ public class RegisterAppointmentActivity extends AppCompatActivity {
                                     return;
                                 }
                                 else {
-                                    String advisorId = documentSnapshots.getDocuments().get(0).getId();
-                                    advisorRef = usersRef.document(advisorId);
+                                    advisorSelectedEmail = documentSnapshots.getDocuments().get(0).getId();
+                                    advisorRef = usersRef.document(advisorSelectedEmail);
                                     advisorRef.get().addOnCompleteListener(new OnCompleteListener<DocumentSnapshot>() {
                                         @Override
                                         public void onComplete(@NonNull Task<DocumentSnapshot> task) {
@@ -365,13 +366,15 @@ public class RegisterAppointmentActivity extends AppCompatActivity {
         userAppointmentsRef = userRef.collection("appointments");
         Map<String, Object> appointmentRequest = new HashMap<String, Object>();
         appointmentRequest.put("name", user.getDisplayName());
+        appointmentRequest.put("email", user.getEmail());
         appointmentRequest.put("date", new Timestamp(date));
 
         Map<String, Object> appointmentUser = new HashMap<String, Object>();
         appointmentUser.put("name", advisorSelected);
+        appointmentUser.put("email", advisorSelectedEmail);
         appointmentUser.put("date", new Timestamp(date));
 
-        inboxRef.document(user.getDisplayName())
+        inboxRef.document(user.getEmail())
                 .set(appointmentRequest)
                 .addOnSuccessListener(new OnSuccessListener<Void>() {
                     @Override
@@ -386,7 +389,7 @@ public class RegisterAppointmentActivity extends AppCompatActivity {
                     }
                 });
 
-        userAppointmentsRef.document(advisorSelected)
+        userAppointmentsRef.document(advisorSelectedEmail)
                 .set(appointmentUser)
                 .addOnSuccessListener(new OnSuccessListener<Void>() {
                     @Override
