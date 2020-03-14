@@ -1,3 +1,4 @@
+/*
 package com.example.a195a_e_senior_project.ui.gallery;
 
 import androidx.lifecycle.LiveData;
@@ -20,3 +21,5 @@ public class GalleryViewModel extends ViewModel {
         return mText;
     }
 }
+
+ */

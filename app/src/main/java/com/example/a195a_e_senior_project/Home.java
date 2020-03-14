@@ -15,6 +15,7 @@ import com.google.android.material.floatingactionbutton.FloatingActionButton;
 
 import android.util.Log;
 import android.view.Gravity;
+import android.view.MenuItem;
 import android.view.View;
 import android.widget.ImageView;
 
@@ -66,15 +67,13 @@ public class Home extends AppCompatActivity {
 
     private FirebaseFirestore db;
 
-
-
-
     @Override
-    protected void onCreate(Bundle savedInstanceState) {
+    protected void onCreate(final Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_home2);
         Toolbar toolbar = findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
+
 
 
         // ini
@@ -99,10 +98,33 @@ public class Home extends AppCompatActivity {
         DrawerLayout drawer = findViewById(R.id.drawer_layout);
         NavigationView navigationView = findViewById(R.id.nav_view);
 
-        // display user's info
+        // display user's name, school, and email
         View headerView = navigationView.getHeaderView(0);
         TextView navUserName = headerView.findViewById(R.id.nav_users_name);
         navUserName.setText(currUser.getDisplayName());
+
+        TextView navSchool = headerView.findViewById(R.id.nav_school);
+        navSchool.setText(currUser.getEmail());
+        final TextView navDept = headerView.findViewById(R.id.nav_department);
+        if(currUser.getEmail() != null){
+            DocumentReference userRef = db.collection("users").document(currUser.getEmail());
+            userRef.get().addOnCompleteListener(new OnCompleteListener<DocumentSnapshot>() {
+                @Override
+                public void onComplete(@NonNull Task<DocumentSnapshot> task) {
+                    if (task.isSuccessful()) {
+                        DocumentSnapshot document = task.getResult();
+                        if (document.exists()) {
+                            Log.d("Get Doc", "DocumentSnapshot data: " + document.getData());
+                            navDept.setText(document.getString("department"));
+                        } else {
+                            Log.d("Get Doc", "No such document");
+                        }
+                    } else {
+                        Log.d("Get Doc", "get failed with ", task.getException());
+                    }
+                }
+            });
+        }
 
 
 
@@ -122,6 +144,23 @@ public class Home extends AppCompatActivity {
         NavController navController = Navigation.findNavController(this, R.id.nav_host_fragment);
         NavigationUI.setupActionBarWithNavController(this, navController, mAppBarConfiguration);
         NavigationUI.setupWithNavController(navigationView, navController);
+
+        navigationView.setNavigationItemSelectedListener(new NavigationView.OnNavigationItemSelectedListener() {
+
+            // Advising Hub in navigation bar function
+            @Override
+            public boolean onNavigationItemSelected(@NonNull MenuItem menuItem) {
+                switch (menuItem.getItemId()) {
+                    case R.id.nav_gallery:
+                        // intent to any Activity.class
+                        Intent intent = new Intent(Home.this, SignUpActivity.class);
+                        startActivity(intent);
+                        return true;
+                }
+                return false;
+            }
+        });
+
     }
 
 
