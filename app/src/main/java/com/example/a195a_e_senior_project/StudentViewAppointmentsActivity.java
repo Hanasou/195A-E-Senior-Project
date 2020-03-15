@@ -174,13 +174,13 @@ public class StudentViewAppointmentsActivity extends AppCompatActivity implement
     }
 
     @Override
-    public void onDialogPositiveClick(DialogFragment dialog) {
+    public void onCancelPositiveClick(DialogFragment dialog) {
         // User touched the dialog's positive button
         //deleteAppointment(appointmentKey);
     }
 
     @Override
-    public void onDialogNegativeClick(DialogFragment dialog) {
+    public void onCancelNegativeClick(DialogFragment dialog) {
         // User touched the dialog's negative button
 
     }
