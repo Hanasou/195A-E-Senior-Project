@@ -11,6 +11,7 @@ import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
+import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.CalendarView;
 import android.widget.CheckBox;
@@ -48,6 +49,7 @@ public class StudentViewAppointmentsActivity extends AppCompatActivity implement
     private ListView appointmentsView;
     private DocumentReference userRef;
     private CollectionReference appointmentsRef;
+    private String appointmentKey;
 
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
@@ -96,7 +98,6 @@ public class StudentViewAppointmentsActivity extends AppCompatActivity implement
         appointmentsRef = userRef.collection("appointments");
 
         final List<String> appointmentsList = new ArrayList<String>();
-        // TODO: Refactor this activity to use ListView. Let students cancel their appointments.
         // refer to ViewScheduleActivity to see how to do it.
         appointmentsRef.get()
                 .addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
@@ -132,6 +133,18 @@ public class StudentViewAppointmentsActivity extends AppCompatActivity implement
                         }
                     }
                 });
+
+        appointmentsView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+            @Override
+            public void onItemClick(AdapterView<?> adapterView, View view, int i, long l) {
+                // appointmentKey is the advisor's email
+                int nIndex = appointmentsList.get(i).indexOf('\n');
+                int nIndex2 = nIndex + appointmentsList.get(i).substring(nIndex + 1).indexOf('\n');
+                appointmentKey = appointmentsList.get(i).substring(nIndex + 1,nIndex2 + 1);
+                Log.d("Email", appointmentKey);
+                showCancellationDialog();
+            }
+        });
     }
 
     public void deleteAppointment(String key) {
@@ -176,7 +189,7 @@ public class StudentViewAppointmentsActivity extends AppCompatActivity implement
     @Override
     public void onCancelPositiveClick(DialogFragment dialog) {
         // User touched the dialog's positive button
-        //deleteAppointment(appointmentKey);
+        deleteAppointment(appointmentKey);
     }
 
     @Override
