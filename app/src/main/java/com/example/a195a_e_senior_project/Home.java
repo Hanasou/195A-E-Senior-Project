@@ -36,6 +36,7 @@ import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.firestore.DocumentReference;
 import com.google.firebase.firestore.DocumentSnapshot;
+import com.google.firebase.firestore.FieldValue;
 import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.firebase.storage.FirebaseStorage;
 import com.google.firebase.storage.StorageReference;
@@ -50,6 +51,9 @@ import android.view.Menu;
 import android.widget.ProgressBar;
 import android.widget.TextView;
 import android.widget.Toast;
+
+import java.util.HashMap;
+import java.util.Map;
 
 public class Home extends AppCompatActivity {
 
@@ -185,7 +189,7 @@ public class Home extends AppCompatActivity {
 
 
         // load current user profile photo
-        Glide.with(Home.this).load(currUser.getPhotoUrl()).into(popupUserImage);
+        //Glide.with(Home.this).load(currUser.getPhotoUrl()).into(popupUserImage);
 
 
         // Add post click button listener
@@ -197,14 +201,19 @@ public class Home extends AppCompatActivity {
                 popupClickProgress.setVisibility(View.VISIBLE);
 
                 // test input fields (title and description) and post picture
+                if(!popupTitle.getText().toString().isEmpty() && !popupDes.getText().toString().isEmpty()){
+                    Log.d("addButton", "In on Click");
+                    addPost(popupTitle.getText().toString(), popupDes.getText().toString());
+
+                }
 
                 if(!popupTitle.getText().toString().isEmpty() && !popupDes.getText().toString().isEmpty()
                         && pickedImaUri == null){           // now no picture can be used
                     // everything work
                     // TODO Create add to Firebase.
 
-                   // enter database and upload image
-                   StorageReference storageReference = FirebaseStorage.getInstance().getReference().child("Forum_images");
+                    // enter database and upload image
+/*                   StorageReference storageReference = FirebaseStorage.getInstance().getReference().child("Forum_images");
                    final StorageReference imageFilePath = storageReference.child(pickedImaUri.getLastPathSegment());
                    imageFilePath.putFile(pickedImaUri).addOnSuccessListener(new OnSuccessListener<UploadTask.TaskSnapshot>() {
                        @Override
@@ -219,7 +228,7 @@ public class Home extends AppCompatActivity {
                                    currUser.getUid(), currUser.getPhotoUrl().toString());
 
                                     // add post to database
-                                   addPost(post);
+                                   //addPost();
 
                                }
                            }).addOnFailureListener(new OnFailureListener() {
@@ -232,7 +241,7 @@ public class Home extends AppCompatActivity {
                                }
                            });
                        }
-                   });
+                   });*/
 
                 }else{
                     showMessage("Please check all your input");
@@ -244,27 +253,52 @@ public class Home extends AppCompatActivity {
         });
     }
 
-    private void addPost(Post post) {
-        FirebaseDatabase database = FirebaseDatabase.getInstance();
-        DatabaseReference mRef = database.getReference("Posts").push();
-
-
-        // get post unique ID and update post key
-        String key = mRef.getKey();
-        post.setPostKey(key);
-
-
-        // add post data to database
-        mRef.setValue(post).addOnSuccessListener(new OnSuccessListener<Void>() {
-            @Override
-            public void onSuccess(Void aVoid) {
-                showMessage("Post added successful!");
-                popupClickProgress.setVisibility(View.INVISIBLE);
-                popupAddButton.setVisibility(View.VISIBLE);
-                popAddPost.dismiss();
-            }
-        });
-
+    private void addPost(String title, String content) {
+        //FirebaseDatabase database = FirebaseDatabase.getInstance();
+        //DatabaseReference mRef = database.getReference("Posts").push();
+        //
+        //
+        //// get post unique ID and update post key
+        //String key = mRef.getKey();
+        //post.setPostKey(key);
+        //
+        //
+        //// add post data to database
+        //mRef.setValue(post).addOnSuccessListener(new OnSuccessListener<Void>() {
+        //    @Override
+        //    public void onSuccess(Void aVoid) {
+        //        showMessage("Post added successful!");
+        //        popupClickProgress.setVisibility(View.INVISIBLE);
+        //        popupAddButton.setVisibility(View.VISIBLE);
+        //        popAddPost.dismiss();
+        //    }
+        //});
+        //currUser = mAth.getCurrentUser();
+        //EditText title = findViewById(R.id.popup_title);
+        //EditText content = findViewById(R.id.popup_description);
+        //final String titleString = title.getText().toString();
+        //final String contentString = content.getText().toString();
+        //DocumentReference newPostRef = db.collection("forum").document();
+        Map<String, Object> newPost = new HashMap<>();
+        //Map<String, Object> postTIme = new HashMap<>();
+        newPost.put("title", title);
+        newPost.put("content", content);
+        newPost.put("author", currUser.getEmail());
+        newPost.put("postTime", FieldValue.serverTimestamp());
+        db.collection("forum")
+                .add(newPost)
+                .addOnSuccessListener(new OnSuccessListener<DocumentReference>() {
+                    @Override
+                    public void onSuccess(DocumentReference documentReference) {
+                        Log.d("forum", "Post successfully with ID: " + documentReference.getId());
+                    }
+                })
+                .addOnFailureListener(new OnFailureListener() {
+                    @Override
+                    public void onFailure(@NonNull Exception e) {
+                        Log.w("forum", "Error adding post", e);
+                    }
+                });
     }
 
 
