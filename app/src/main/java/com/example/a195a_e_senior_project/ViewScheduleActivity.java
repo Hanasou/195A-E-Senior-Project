@@ -55,6 +55,7 @@ public class ViewScheduleActivity extends AppCompatActivity implements CancelApp
     private CollectionReference inboxRef;
     private String blockKey;
     private String appointmentKey;
+    private HashMap<String, String> scheduleData;
 
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
@@ -109,10 +110,8 @@ public class ViewScheduleActivity extends AppCompatActivity implements CancelApp
                 if (task.isSuccessful()) {
                     DocumentSnapshot document = task.getResult();
                     if (document.exists()) {
-                        Map<String, String> scheduleData = (HashMap<String, String>) document.getData().get("schedule");
+                        scheduleData = (HashMap<String, String>) document.getData().get("schedule");
                         for (String day : scheduleData.keySet()) {
-                            CheckBox scheduleBlock = new CheckBox(getApplicationContext());
-                            scheduleBlock.setText(day + " " + scheduleData.get(day));
                             blocksList.add(day + " " + scheduleData.get(day));
                         }
                         inboxRef.get()
@@ -176,8 +175,8 @@ public class ViewScheduleActivity extends AppCompatActivity implements CancelApp
             public void onItemClick(AdapterView<?> adapterView, View view, int i, long l) {
                 // appointmentKey is the advisor's email
                 int nIndex = appointmentsList.get(i).indexOf('\n');
-                int nIndex2 = appointmentsList.get(i).substring(nIndex).indexOf('\n');
-                appointmentKey = appointmentsList.get(i).substring(nIndex,nIndex2);
+                int nIndex2 = nIndex + appointmentsList.get(i).substring(nIndex + 1).indexOf('\n');
+                appointmentKey = appointmentsList.get(i).substring(nIndex + 1,nIndex2 + 1);
                 Log.d("Email", appointmentKey);
                 showCancellationDialog();
             }
@@ -225,10 +224,28 @@ public class ViewScheduleActivity extends AppCompatActivity implements CancelApp
 
     /**
      * Removes one of the open appointment blocks.
-     * TODO: Fill this in so advisors can remove one of their open blocks.
      */
-    public void removeBlock() {
-
+    public void removeBlock(String key) {
+        final String deleteBlock = key;
+        final String day = deleteBlock.substring(0, deleteBlock.indexOf(' '));
+        final String time = deleteBlock.substring(deleteBlock.indexOf(' ') + 1);
+        scheduleData.remove(day, time);
+        Log.d("SCHEDULE day", day);
+        Log.d("SCHEDULE day", time);
+        userRef
+                .update("schedule", scheduleData)
+                .addOnSuccessListener(new OnSuccessListener<Void>() {
+                    @Override
+                    public void onSuccess(Void aVoid) {
+                        Log.d("SUCCESS", "DocumentSnapshot successfully updated!");
+                    }
+                })
+                .addOnFailureListener(new OnFailureListener() {
+                    @Override
+                    public void onFailure(@NonNull Exception e) {
+                        Log.w("FAILURE", "Error updating document", e);
+                    }
+                });
     }
 
     /**
@@ -250,7 +267,9 @@ public class ViewScheduleActivity extends AppCompatActivity implements CancelApp
 
     @Override
     public void onBlockDeletePositiveClick(DialogFragment dialog) {
-
+        removeBlock(blockKey);
+        finish();
+        startActivity(getIntent());
     }
 
     @Override
@@ -262,6 +281,8 @@ public class ViewScheduleActivity extends AppCompatActivity implements CancelApp
     public void onCancelPositiveClick(DialogFragment dialog) {
         // User touched the dialog's positive button
         deleteAppointment(appointmentKey);
+        finish();
+        startActivity(getIntent());
     }
 
     @Override
