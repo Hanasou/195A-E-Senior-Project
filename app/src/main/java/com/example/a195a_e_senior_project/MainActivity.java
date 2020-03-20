@@ -56,14 +56,16 @@ public class MainActivity extends AppCompatActivity {
                     if (task.isSuccessful()) {
                         DocumentSnapshot document = task.getResult();
                         if (document.exists()) {
-                            boolean isFaculty = (boolean) document.getData().get("isFaculty");
-                            if (isFaculty) {
-                                Intent intent = new Intent(MainActivity.this, FacultyDashboardActivity.class);
-                                startActivity(intent);
-                            }
-                            else {
-                                Intent intent = new Intent(MainActivity.this, DashboardActivity.class);
-                                startActivity(intent);
+                            if(document.getData().get("isFaculty") != null){
+                                boolean isFaculty = (boolean) document.getData().get("isFaculty");
+                                if (isFaculty) {
+                                    Intent intent = new Intent(MainActivity.this, FacultyDashboardActivity.class);
+                                    startActivity(intent);
+                                }
+                                else {
+                                    Intent intent = new Intent(MainActivity.this, DashboardActivity.class);
+                                    startActivity(intent);
+                                }
                             }
                         } else {
                             Log.d("Document ", "Does not exist");
