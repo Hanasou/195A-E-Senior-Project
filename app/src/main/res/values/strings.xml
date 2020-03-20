@@ -3,6 +3,16 @@
     <string name="sign_up">Sign Up</string>
     <string name="username">Username</string>
     <string name="password">Password</string>
+    <string-array name="role">
+        <item>Advisor</item>
+        <item>Faculty</item>
+        <item>Student</item>
+    </string-array>
+    <string-array name="school">
+        <item>San Jose State University</item>
+    </string-array>
+    <string name="role_text">Choose a role...</string>
+    <string name="Cancel">Cancel</string>
     <string name="login">Login</string>
     <string name="next">Next</string>
     <string name="confirm_password">Confirm Password</string>
@@ -30,6 +40,18 @@
     <string name="submit">Submit</string>
     <string name="advising_hub">Advising Hub</string>
     <string name="community">Community</string>
+    <string-array name="department">
+        <item>Computer Engineering</item>
+        <item>Computer Science</item>
+    </string-array>
+    <string-array name="CMPE">
+        <item>Computer Engineering</item>
+        <item>Software Engineering</item>
+    </string-array>
+    <string-array name="program">
+        <item>UnderGraduate</item>
+        <item>Graduate</item>
+    </string-array>
     <string name="make_appointment">Make Appointment</string>
     <string name="set_date">Set Date</string>
     <string name="set_schedule">Set Schedule</string>
@@ -42,5 +64,4 @@
     <string name="current_schedule">Current Schedule</string>
     <string name="delete_selected">Delete Selected</string>
     <string name="appointments">Appointments</string>
-    >>>>>>> please work
 </resources>
