@@ -1,0 +1,100 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="#97C9E7">
+
+    <TextView
+        android:id="@+id/current_time_textView"
+        android:layout_width="215dp"
+        android:layout_height="30dp"
+        android:layout_marginTop="116dp"
+        android:text="Current Available Time"
+        android:textSize="20sp"
+        android:textStyle="bold"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.497"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
+
+    <Spinner
+        android:id="@+id/current_time_spinner"
+        android:layout_width="384dp"
+        android:layout_height="44dp"
+        android:layout_marginTop="40dp"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.481"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/current_time_textView" />
+
+    <RadioGroup
+        android:id="@+id/set_time_radioGroup"
+        android:layout_width="364dp"
+        android:layout_height="330dp"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/current_time_spinner">
+
+        <TextView
+            android:id="@+id/date_textView6"
+            android:layout_width="145dp"
+            android:layout_height="45dp"
+            android:textSize="20dp"
+            android:text="Date: "
+            android:textStyle="bold"/>
+
+        <Spinner
+            android:id="@+id/date_spinner"
+            android:layout_width="match_parent"
+            android:scrollbarSize="20sp"
+            android:layout_marginTop="5dp"
+            android:layout_height="55dp" />
+
+        <TextView
+            android:id="@+id/start_time_textView"
+            android:layout_width="145dp"
+            android:layout_height="45dp"
+            android:layout_marginTop="5dp"
+            android:textStyle="bold"
+            android:textSize="20sp"
+            android:text="Start Time:" />
+
+        <Spinner
+            android:id="@+id/start_time_spinner"
+            android:layout_width="match_parent"
+            android:layout_marginTop="5dp"
+            android:layout_height="55dp" />
+
+        <TextView
+            android:id="@+id/end_time_textView8"
+            android:layout_width="145dp"
+            android:layout_height="45dp"
+            android:textSize="20sp"
+            android:textStyle="bold"
+            android:layout_marginTop="5dp"
+            android:text="End Time:" />
+
+        <Spinner
+            android:id="@+id/end_time_spinner"
+            android:layout_width="match_parent"
+            android:layout_marginTop="5dp"
+            android:layout_height="55dp" />
+
+    </RadioGroup>
+
+    <TextView
+        android:id="@+id/textView9"
+        android:layout_width="226dp"
+        android:layout_height="22dp"
+        android:text="Set Available Time"
+        android:textSize="15dp"
+        app:layout_constraintBottom_toTopOf="@+id/set_time_radioGroup"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.129"
+        app:layout_constraintStart_toStartOf="parent" />
+
+</androidx.constraintlayout.widget.ConstraintLayout>

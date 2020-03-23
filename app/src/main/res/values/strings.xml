@@ -3,6 +3,16 @@
     <string name="sign_up">Sign Up</string>
     <string name="username">Username</string>
     <string name="password">Password</string>
+    <string-array name="role">
+        <item>Advisor</item>
+        <item>Faculty</item>
+        <item>Student</item>
+    </string-array>
+    <string-array name="school">
+        <item>San Jose State University</item>
+    </string-array>
+    <string name="role_text">Choose a role...</string>
+    <string name="Cancel">Cancel</string>
     <string name="login">Login</string>
     <string name="next">Next</string>
     <string name="confirm_password">Confirm Password</string>
@@ -30,6 +40,18 @@
     <string name="submit">Submit</string>
     <string name="advising_hub">Advising Hub</string>
     <string name="community">Community</string>
+    <string-array name="department">
+        <item>Computer Engineering</item>
+        <item>Computer Science</item>
+    </string-array>
+    <string-array name="CMPE">
+        <item>Computer Engineering</item>
+        <item>Software Engineering</item>
+    </string-array>
+    <string-array name="program">
+        <item>UnderGraduate</item>
+        <item>Graduate</item>
+    </string-array>
     <string name="make_appointment">Make Appointment</string>
     <string name="set_date">Set Date</string>
     <string name="set_schedule">Set Schedule</string>
@@ -45,9 +67,28 @@
     <string name="forum">Forum</string>
     <string name="view_appointments">View Appointments</string>
     <string name="view_notifications">View Notifications</string>
-
-    <!-- TODO: Remove or change this placeholder text -->
     <string name="hello_blank_fragment">Hello blank fragment</string>
     <string name="open_blocks">Open Blocks</string>
     >>>>>>> please work
+    <string name="title_activity_home">Home</string>
+    <string name="navigation_drawer_open">Open navigation drawer</string>
+    <string name="navigation_drawer_close">Close navigation drawer</string>
+    <string name="nav_header_title">Android Studio</string>
+    <string name="nav_header_subtitle">android.studio@android.com</string>
+    <string name="nav_header_desc">Navigation header</string>
+    <string name="action_settings">Settings</string>
+    <string name="menu_home">Home</string>
+    <string name="menu_gallery">Gallery</string>
+    <string name="menu_slideshow">Slideshow</string>
+    <string name="menu_tools">Tools</string>
+    <string name="menu_share">Share</string>
+    <string name="menu_send">Send</string>
+    <string name="usersname">usersName</string>
+    <string name="profile">Profile</string>
+    <string name="settings">Settings</string>
+    <string name="log_out">Log Out</string>
+    <string name="terms_conditions"><![CDATA[Terms & Conditions]]></string>
+    <string name="profile_fragment">Profile Fragment</string>
+    <string name="terms_conditions_fragment"><![CDATA[Terms & Conditions Fragment]]></string>
+    <string name="terms_condtions"><![CDATA[Terms & Condtions]]></string>
 </resources>
