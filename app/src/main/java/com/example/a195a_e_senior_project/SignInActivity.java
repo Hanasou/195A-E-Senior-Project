@@ -58,7 +58,7 @@ public class SignInActivity extends AppCompatActivity {
                             FirebaseUser user = mAuth.getCurrentUser();
 
                             // Redirect user back to main activity
-                            Intent intent = new Intent(SignInActivity.this, MainActivity.class);
+                            Intent intent = new Intent(SignInActivity.this, Home.class);
                             startActivity(intent);
                         } else {
                             // If sign in fails, display a message to the user.

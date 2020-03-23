@@ -65,6 +65,7 @@
         android:layout_marginTop="50dp"
         android:onClick="signUp"
         android:text="@string/sign_up"
+        android:backgroundTint="#99B1BE"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="0.3"
         app:layout_constraintStart_toStartOf="parent"
@@ -77,6 +78,7 @@
         android:layout_marginTop="50dp"
         android:layout_marginLeft="40dp"
         android:onClick="signIn"
+        android:backgroundTint="#99B1BE"
         android:text="@string/common_signin_button_text"
         app:layout_constraintTop_toBottomOf="@+id/passwordLayout"
         app:layout_constraintLeft_toRightOf="@+id/signUp" />
