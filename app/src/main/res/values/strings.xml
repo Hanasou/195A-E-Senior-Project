@@ -91,13 +91,6 @@
     <string name="profile_fragment">Profile Fragment</string>
     <string name="terms_conditions_fragment"><![CDATA[Terms & Conditions Fragment]]></string>
     <string name="terms_condtions"><![CDATA[Terms & Condtions]]></string>
-    <string name="forum">Forum</string>
-    <string name="view_appointments">View Appointments</string>
-    <string name="view_notifications">View Notifications</string>
-
-    <!-- TODO: Remove or change this placeholder text -->
-    <string name="hello_blank_fragment">Hello blank fragment</string>
-    <string name="open_blocks">Open Blocks</string>
     >>>>>>> please work
 >>>>>>> maybe complete
 </resources>
