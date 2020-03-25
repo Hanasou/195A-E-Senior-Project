@@ -64,6 +64,12 @@
     <string name="current_schedule">Current Schedule</string>
     <string name="delete_selected">Delete Selected</string>
     <string name="appointments">Appointments</string>
+    <string name="forum">Forum</string>
+    <string name="view_appointments">View Appointments</string>
+    <string name="view_notifications">View Notifications</string>
+    <string name="hello_blank_fragment">Hello blank fragment</string>
+    <string name="open_blocks">Open Blocks</string>
+    >>>>>>> please work
     <string name="title_activity_home">Home</string>
     <string name="navigation_drawer_open">Open navigation drawer</string>
     <string name="navigation_drawer_close">Close navigation drawer</string>
@@ -85,4 +91,6 @@
     <string name="profile_fragment">Profile Fragment</string>
     <string name="terms_conditions_fragment"><![CDATA[Terms & Conditions Fragment]]></string>
     <string name="terms_condtions"><![CDATA[Terms & Condtions]]></string>
+    >>>>>>> please work
+>>>>>>> maybe complete
 </resources>

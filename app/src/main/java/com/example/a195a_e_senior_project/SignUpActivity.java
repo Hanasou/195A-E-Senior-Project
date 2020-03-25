@@ -113,11 +113,17 @@ public class SignUpActivity extends AppCompatActivity {
                                 // Sign in success
                                 Log.d("Create User: ", "createUserWithEmail:success");
 
+                                boolean isFaculty = false;
+                                if (roleSelected == "Faculty") {
+                                    isFaculty = true;
+                                }
                                 // Add User into database
                                 Map<String, Object> addUser = new HashMap<>();
                                 addUser.put("first", firstNameString);
                                 addUser.put("last", lastNameString);
-                                addUser.put("isFaculty", false);
+                                addUser.put("isFaculty", isFaculty);
+                                addUser.put("college", "Undeclared");
+                                addUser.put("department", "Undeclared");
                                 db.collection("users").document(usernameString)
                                         .set(addUser)
                                         .addOnSuccessListener(new OnSuccessListener<Void>() {

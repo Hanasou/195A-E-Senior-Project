@@ -4,11 +4,16 @@ import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.fragment.app.DialogFragment;
 
+import android.app.AlarmManager;
 import android.app.DatePickerDialog;
 import android.app.Dialog;
+import android.app.PendingIntent;
 import android.content.Intent;
 import android.os.Bundle;
 import android.util.Log;
+import android.view.Menu;
+import android.view.MenuInflater;
+import android.view.MenuItem;
 import android.view.View;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
@@ -18,6 +23,7 @@ import android.widget.Spinner;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.example.a195a_e_senior_project.broadcasts.NotificationBroadcastReceiver;
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.OnSuccessListener;
@@ -63,6 +69,7 @@ public class RegisterAppointmentActivity extends AppCompatActivity {
     private TextView dateText;
     private String advisingOptionSelected;
     private String advisorSelected;
+    private String advisorSelectedEmail;
     private String blockSelected;
     private String dateSelected;
     private Map<String, String> advisorSchedule;
@@ -71,6 +78,41 @@ public class RegisterAppointmentActivity extends AppCompatActivity {
     private CollectionReference usersRef;
     private CollectionReference inboxRef;
     private CollectionReference userAppointmentsRef;
+    private CollectionReference userNotifRef;
+
+    @Override
+    public boolean onCreateOptionsMenu(Menu menu) {
+        MenuInflater menuInflater = new MenuInflater(this);
+        menuInflater.inflate(R.menu.bottom_nav_menu, menu);
+        return super.onCreateOptionsMenu(menu);
+    }
+
+    @Override
+    public boolean onOptionsItemSelected(@NonNull MenuItem item) {
+        switch (item.getItemId()) {
+            case R.id.navigation_home:
+                Intent homeIntent = new Intent(this, MainActivity.class);
+                startActivity(homeIntent);
+                return true;
+
+            case R.id.navigation_advising:
+                return true;
+
+            case R.id.navigation_forum:
+                return true;
+
+            case R.id.navigation_notifications:
+                Intent notificationIntent = new Intent(this, NotificationsActivity.class);
+                startActivity(notificationIntent);
+                return true;
+
+            default:
+                // If we got here, the user's action was not recognized.
+                // Invoke the superclass to handle it.
+                return super.onOptionsItemSelected(item);
+
+        }
+    }
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -110,8 +152,66 @@ public class RegisterAppointmentActivity extends AppCompatActivity {
                 // An item was selected. You can retrieve the selected item using
                 // parent.getItemAtPosition(pos)
                 advisingOptionSelected = parent.getItemAtPosition(pos).toString();
+                // TODO: If user selects their Department, get the user's department and get all advisors from that department.
                 if (advisingOptionSelected.equals("Department")) {
+                    userRef.get().addOnCompleteListener(new OnCompleteListener<DocumentSnapshot>() {
+                        @Override
+                        public void onComplete(@NonNull Task<DocumentSnapshot> task) {
+                            if (task.isSuccessful()) {
+                                DocumentSnapshot document = task.getResult();
+                                if (document.exists()) {
+                                    Log.d("GET", "DocumentSnapshot data: " + document.getData());
+                                    // Get user's department.
+                                    String userDepartment = (String) document.get("department");
 
+                                    // Query for all of users' department advisors.
+                                    usersRef.whereEqualTo("advisor", userDepartment)
+                                            .get()
+                                            .addOnSuccessListener(new OnSuccessListener<QuerySnapshot>() {
+                                                public void onSuccess(QuerySnapshot documentSnapshots) {
+                                                    if (documentSnapshots.isEmpty()) {
+                                                        Log.d("Result ", "onSuccess: No Snapshots");
+                                                        advisorSelected = null;
+                                                        blockSelected = null;
+                                                        dateSelected = null;
+                                                        advisors.setVisibility(INVISIBLE);
+                                                        advisingBlock.setVisibility(INVISIBLE);
+                                                        setDate.setVisibility(INVISIBLE);
+                                                        return;
+                                                    }
+                                                    else {
+                                                        Log.d("Result ", "onSuccess: List contains something");
+                                                        List<String> advisorList = new ArrayList<String>();
+                                                        for (DocumentSnapshot document : documentSnapshots.getDocuments()) {
+                                                            String fullName = document.getData().get("first").toString() + " " +
+                                                                    document.getData().get("last").toString();
+                                                            advisorList.add(fullName);
+                                                        }
+                                                        // Use array adapter to adapt items into the format we want them in.
+                                                        ArrayAdapter<String> adapter = new ArrayAdapter<String>(RegisterAppointmentActivity.this, android.R.layout.simple_spinner_item,
+                                                                advisorList);
+                                                        adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
+
+                                                        // Load the adapter into a spinner (dropdown menu)
+                                                        advisors.setAdapter(adapter);
+                                                        advisors.setVisibility(VISIBLE);
+                                                    }
+                                                }
+                                            })
+                                            .addOnFailureListener(new OnFailureListener() {
+                                                public void onFailure(@NonNull Exception e) {
+                                                    Toast.makeText(getApplicationContext(), "Could not retrieve data",
+                                                            Toast.LENGTH_SHORT).show();
+                                                }
+                                            });
+                                } else {
+                                    Log.d("GET", "No such document");
+                                }
+                            } else {
+                                Log.d("GET", "failed with ", task.getException());
+                            }
+                        }
+                    });
                 }
                 else {
                     usersRef.whereEqualTo("advisor", advisingOptionSelected)
@@ -179,8 +279,8 @@ public class RegisterAppointmentActivity extends AppCompatActivity {
                                     return;
                                 }
                                 else {
-                                    String advisorId = documentSnapshots.getDocuments().get(0).getId();
-                                    advisorRef = usersRef.document(advisorId);
+                                    advisorSelectedEmail = documentSnapshots.getDocuments().get(0).getId();
+                                    advisorRef = usersRef.document(advisorSelectedEmail);
                                     advisorRef.get().addOnCompleteListener(new OnCompleteListener<DocumentSnapshot>() {
                                         @Override
                                         public void onComplete(@NonNull Task<DocumentSnapshot> task) {
@@ -266,13 +366,15 @@ public class RegisterAppointmentActivity extends AppCompatActivity {
         userAppointmentsRef = userRef.collection("appointments");
         Map<String, Object> appointmentRequest = new HashMap<String, Object>();
         appointmentRequest.put("name", user.getDisplayName());
+        appointmentRequest.put("email", user.getEmail());
         appointmentRequest.put("date", new Timestamp(date));
 
         Map<String, Object> appointmentUser = new HashMap<String, Object>();
         appointmentUser.put("name", advisorSelected);
+        appointmentUser.put("email", advisorSelectedEmail);
         appointmentUser.put("date", new Timestamp(date));
 
-        inboxRef.document(user.getDisplayName())
+        inboxRef.document(user.getEmail())
                 .set(appointmentRequest)
                 .addOnSuccessListener(new OnSuccessListener<Void>() {
                     @Override
@@ -287,7 +389,7 @@ public class RegisterAppointmentActivity extends AppCompatActivity {
                     }
                 });
 
-        userAppointmentsRef.document(advisorSelected)
+        userAppointmentsRef.document(advisorSelectedEmail)
                 .set(appointmentUser)
                 .addOnSuccessListener(new OnSuccessListener<Void>() {
                     @Override
@@ -302,6 +404,45 @@ public class RegisterAppointmentActivity extends AppCompatActivity {
                     }
                 });
 
+        userNotifRef = userRef.collection("notifications");
+        Map<String, Object> notificationEntry = new HashMap<String, Object>();
+        Object notifContent = "You have an appointment with " + advisorSelected + " on " + date.toString();
+        notificationEntry.put("content", notifContent);
+        userNotifRef.document(advisorSelected)
+                .set(notificationEntry)
+                .addOnSuccessListener(new OnSuccessListener<Void>() {
+                    @Override
+                    public void onSuccess(Void aVoid) {
+                        Log.d("DocWrite", "DocumentSnapshot successfully written!");
+                    }
+                })
+                .addOnFailureListener(new OnFailureListener() {
+                    @Override
+                    public void onFailure(@NonNull Exception e) {
+                        Log.w("DocWrite", "Error writing document", e);
+                    }
+                });
+
+        // TODO: Create a pending intent to notify user and advisor on their appointment in the future.
+        // Set up Alarm Manager, Calendar, and Pending Intent to start a NotificationBroadcastReceiver
+        AlarmManager alarmMgr = (AlarmManager) getSystemService(ALARM_SERVICE);
+        Intent notifIntent = new Intent(getApplicationContext(), NotificationBroadcastReceiver.class);
+        String notifTitle = date.toString() + " Appointment";
+        String notifBody = "Your appointment with " + advisorSelected + " is on " + date.toString();
+        notifIntent.putExtra("NOTIF_TITLE", notifTitle);
+        notifIntent.putExtra("NOTIF_BODY", notifBody);
+        PendingIntent alarmIntent = PendingIntent.getBroadcast(getApplicationContext(), 0, notifIntent, 0);
+
+        // Set Calendar
+        Calendar calendar = Calendar.getInstance();
+        calendar.setTime(date);
+        calendar.add(Calendar.DAY_OF_MONTH, -1);
+
+        // Set Alarm
+        alarmMgr.set(AlarmManager.ELAPSED_REALTIME_WAKEUP,
+                calendar.getTimeInMillis(), alarmIntent);
+
+        // Redirect user back to Dashboard
         Intent intent = new Intent(this, DashboardActivity.class);
         startActivity(intent);
     }

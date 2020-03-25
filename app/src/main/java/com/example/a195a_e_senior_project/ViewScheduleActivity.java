@@ -2,6 +2,7 @@ package com.example.a195a_e_senior_project;
 
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.fragment.app.DialogFragment;
 
 import android.content.Intent;
 import android.os.Bundle;
@@ -10,17 +11,19 @@ import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
+import android.widget.AdapterView;
+import android.widget.ArrayAdapter;
 import android.widget.CheckBox;
-import android.widget.CheckedTextView;
-import android.widget.LinearLayout;
+import android.widget.ListView;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.example.a195a_e_senior_project.dialogs.CancelAppointmentDialog;
+import com.example.a195a_e_senior_project.dialogs.DeleteAdvisingBlockDialog;
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.android.gms.tasks.Task;
-import com.google.android.material.resources.TextAppearance;
 import com.google.firebase.Timestamp;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
@@ -40,22 +43,24 @@ import java.util.Map;
 /**
  * Activity for Faculty viewing their schedule.
  */
-public class ViewScheduleActivity extends AppCompatActivity {
+public class ViewScheduleActivity extends AppCompatActivity implements CancelAppointmentDialog.CancelAppointmentDialogListener,
+        DeleteAdvisingBlockDialog.DeleteAdvisingBlockListener {
 
     private FirebaseAuth mAuth;
     private FirebaseUser user;
     private FirebaseFirestore db;
-    private LinearLayout schedule;
+    private ListView blocksView;
+    private ListView appointmentsView;
     private DocumentReference userRef;
     private CollectionReference inboxRef;
-    private List<String> removedBlocks;
-    private List<String> removedAppointments;
+    private String blockKey;
     private String appointmentKey;
+    private HashMap<String, String> scheduleData;
 
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
         MenuInflater menuInflater = new MenuInflater(this);
-        menuInflater.inflate(R.menu.schedule_menu, menu);
+        menuInflater.inflate(R.menu.bottom_nav_menu, menu);
         return super.onCreateOptionsMenu(menu);
     }
 
@@ -63,72 +68,17 @@ public class ViewScheduleActivity extends AppCompatActivity {
     public boolean onOptionsItemSelected(@NonNull MenuItem item) {
         switch (item.getItemId()) {
             case R.id.navigation_home:
-                Intent homeIntent = new Intent(this, FacultyDashboardActivity.class);
+                Intent homeIntent = new Intent(this, MainActivity.class);
                 startActivity(homeIntent);
                 return true;
 
-            case R.id.navigation_dashboard:
+            case R.id.navigation_advising:
                 return true;
 
             case R.id.navigation_notifications:
                 return true;
 
-            case R.id.delete_block:
-                userRef.get().addOnCompleteListener(new OnCompleteListener<DocumentSnapshot>() {
-                    @Override
-                    public void onComplete(@NonNull Task<DocumentSnapshot> task) {
-                        if (task.isSuccessful()) {
-                            DocumentSnapshot document = task.getResult();
-                            if (document.exists()) {
-                                Map<String, String> scheduleData = (HashMap<String, String>) document.getData().get("schedule");
-                                for (String day : removedBlocks) {
-                                    scheduleData.remove(day);
-                                }
-                                userRef.update(
-                                        "schedule", scheduleData)
-                                        .addOnSuccessListener(new OnSuccessListener<Void>() {
-                                            @Override
-                                            public void onSuccess(Void aVoid) {
-                                                Toast.makeText(getApplicationContext(), "Schedule Updated",
-                                                        Toast.LENGTH_SHORT).show();
-                                            }
-                                        })
-                                        .addOnFailureListener(new OnFailureListener() {
-                                            @Override
-                                            public void onFailure(@NonNull Exception e) {
-                                                Toast.makeText(getApplicationContext(), "Schedule Update Failed",
-                                                        Toast.LENGTH_SHORT).show();
-                                                Log.w("UpdateError", "Error updating document", e);
-                                            }
-                                        });
-                            } else {
-                                Toast.makeText(getApplicationContext(), "Document Doesn't Exist. Somehow.",
-                                        Toast.LENGTH_SHORT).show();
-                            }
-                        } else {
-                            Toast.makeText(getApplicationContext(), "Task Unsuccessful",
-                                    Toast.LENGTH_SHORT).show();
-                        }
-                    }
-                });
-                for (String name : removedAppointments) {
-                    inboxRef.document(name)
-                            .delete()
-                            .addOnSuccessListener(new OnSuccessListener<Void>() {
-                                @Override
-                                public void onSuccess(Void aVoid) {
-                                    Log.d("DeletionStatus", "DocumentSnapshot successfully deleted!");
-                                }
-                            })
-                            .addOnFailureListener(new OnFailureListener() {
-                                @Override
-                                public void onFailure(@NonNull Exception e) {
-                                    Log.w("DeletionStatus", "Error deleting document", e);
-                                }
-                            });
-                }
-                Intent intent = new Intent(this, FacultyDashboardActivity.class);
-                startActivity(intent);
+            case R.id.navigation_forum:
                 return true;
 
             default:
@@ -146,44 +96,24 @@ public class ViewScheduleActivity extends AppCompatActivity {
 
         mAuth = FirebaseAuth.getInstance();
         user = mAuth.getCurrentUser();
-        schedule = findViewById(R.id.scheduleLayout);
+        blocksView = findViewById(R.id.blocks);
+        appointmentsView = findViewById(R.id.appointmentsView);
         db = FirebaseFirestore.getInstance();
         userRef = db.collection("users").document(user.getEmail());
         inboxRef = userRef.collection("inbox");
-        removedBlocks = new ArrayList<String>();
-        removedAppointments = new ArrayList<String>();
 
+        final List<String> blocksList = new ArrayList<String>();
+        final List<String> appointmentsList = new ArrayList<String>();
         userRef.get().addOnCompleteListener(new OnCompleteListener<DocumentSnapshot>() {
             @Override
             public void onComplete(@NonNull Task<DocumentSnapshot> task) {
                 if (task.isSuccessful()) {
                     DocumentSnapshot document = task.getResult();
                     if (document.exists()) {
-                        Map<String, String> scheduleData = (HashMap<String, String>) document.getData().get("schedule");
+                        scheduleData = (HashMap<String, String>) document.getData().get("schedule");
                         for (String day : scheduleData.keySet()) {
-                            CheckBox scheduleBlock = new CheckBox(getApplicationContext());
-                            scheduleBlock.setText(day + " " + scheduleData.get(day));
-                            schedule.addView(scheduleBlock);
-                            scheduleBlock.setOnClickListener(new View.OnClickListener() {
-                                @Override
-                                public void onClick(View v) {
-                                    boolean checked = ((CheckBox) v).isChecked();
-                                    String boxText = ((CheckBox) v).getText().toString();
-                                    String firstWord = boxText.substring(0, boxText.indexOf(' '));
-                                    if (checked) {
-                                        removedBlocks.add(firstWord);
-                                    }
-                                    else {
-                                        removedBlocks.remove(firstWord);
-                                    }
-                                }
-                            });
+                            blocksList.add(day + " " + scheduleData.get(day));
                         }
-                        TextView appointmentText = new TextView(getApplicationContext());
-                        appointmentText.setText("Appointments");
-                        appointmentText.setTextAppearance(R.style.TextAppearance_AppCompat_Large);
-                        schedule.addView(appointmentText);
-
                         inboxRef.get()
                                 .addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
                                     @Override
@@ -192,29 +122,13 @@ public class ViewScheduleActivity extends AppCompatActivity {
                                             List<String> expiredAppointments = new ArrayList<String>();
                                             for (QueryDocumentSnapshot document : task.getResult()) {
                                                 Log.d("DocGet", document.getId() + " => " + document.getData());
-                                                Map<String, Object> appointmentData = document.getData();
-                                                Date appointmentDate = ((Timestamp) appointmentData.get("date")).toDate();
+                                                Date appointmentDate = ((Timestamp) document.get("date")).toDate();
 
                                                 // If the appointment has not expired yet, add it to the view.
                                                 if (appointmentDate.after(new Date())) {
-                                                    CheckBox appointmentText = new CheckBox(getApplicationContext());
-                                                    appointmentText.setText(appointmentData.get("name").toString() + "\n" +
-                                                            appointmentData.get("date").toString());
-                                                    schedule.addView(appointmentText);
-                                                    appointmentText.setOnClickListener(new View.OnClickListener() {
-                                                        @Override
-                                                        public void onClick(View v) {
-                                                            boolean checked = ((CheckBox) v).isChecked();
-                                                            String boxText = ((CheckBox) v).getText().toString();
-                                                            appointmentKey = boxText.substring(0, boxText.indexOf('\n'));
-                                                            if (checked) {
-                                                                removedAppointments.add(appointmentKey);
-                                                            }
-                                                            else {
-                                                                removedAppointments.remove(appointmentKey);
-                                                            }
-                                                        }
-                                                    });
+                                                    appointmentsList.add(document.get("name").toString() + "\n" +
+                                                            document.get("email").toString() + "\n" +
+                                                            appointmentDate.toString());
                                                 }
                                                 // Otherwise, add it to the list of expired appointments.
                                                 else {
@@ -224,26 +138,20 @@ public class ViewScheduleActivity extends AppCompatActivity {
 
                                             // Delete all expired appointments
                                             for (String appointmentId : expiredAppointments) {
-                                                inboxRef.document(appointmentId)
-                                                        .delete()
-                                                        .addOnSuccessListener(new OnSuccessListener<Void>() {
-                                                            @Override
-                                                            public void onSuccess(Void aVoid) {
-                                                                Log.d("DeletionStatus", "DocumentSnapshot successfully deleted!");
-                                                            }
-                                                        })
-                                                        .addOnFailureListener(new OnFailureListener() {
-                                                            @Override
-                                                            public void onFailure(@NonNull Exception e) {
-                                                                Log.w("DeletionStatus", "Error deleting document", e);
-                                                            }
-                                                        });
+                                                deleteAppointment(appointmentId);
                                             }
                                         } else {
                                             Log.d("DocGet", "Error getting documents: ", task.getException());
                                         }
                                     }
                                 });
+
+                        ArrayAdapter<String> blocksAdapter = new ArrayAdapter<String>(ViewScheduleActivity.this,
+                                android.R.layout.simple_selectable_list_item, blocksList);
+                        ArrayAdapter<String> appointmentsAdapter = new ArrayAdapter<String>(ViewScheduleActivity.this,
+                                android.R.layout.simple_selectable_list_item, appointmentsList);
+                        blocksView.setAdapter(blocksAdapter);
+                        appointmentsView.setAdapter(appointmentsAdapter);
                     } else {
                         Toast.makeText(getApplicationContext(), "Document Doesn't Exist. Somehow.",
                                 Toast.LENGTH_SHORT).show();
@@ -254,5 +162,132 @@ public class ViewScheduleActivity extends AppCompatActivity {
                 }
             }
         });
+
+        blocksView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+            @Override
+            public void onItemClick(AdapterView<?> adapterView, View view, int i, long l) {
+                blockKey = blocksList.get(i);
+                showDeleteBlockDialog();
+            }
+        });
+        appointmentsView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+            @Override
+            public void onItemClick(AdapterView<?> adapterView, View view, int i, long l) {
+                // appointmentKey is the advisor's email
+                int nIndex = appointmentsList.get(i).indexOf('\n');
+                int nIndex2 = nIndex + appointmentsList.get(i).substring(nIndex + 1).indexOf('\n');
+                appointmentKey = appointmentsList.get(i).substring(nIndex + 1,nIndex2 + 1);
+                Log.d("Email", appointmentKey);
+                showCancellationDialog();
+            }
+        });
+    }
+
+    /**
+     * Deletes an appointment by docID
+     * @param key document id of the appointment you want to delete
+     */
+    public void deleteAppointment(String key) {
+        final String studentEmail = key;
+        inboxRef.document(studentEmail)
+                .delete()
+                .addOnSuccessListener(new OnSuccessListener<Void>() {
+                    @Override
+                    public void onSuccess(Void aVoid) {
+                        final String thisEmail = user.getEmail();
+                        Log.d("DeletionStatus", "Faculty copy DocumentSnapshot successfully deleted!");
+                        DocumentReference studentRef = db.collection("users").document(studentEmail);
+                        CollectionReference appointmentsRef = studentRef.collection("appointments");
+
+                        appointmentsRef.document(thisEmail)
+                                .delete()
+                                .addOnSuccessListener(new OnSuccessListener<Void>() {
+                                    public void onSuccess(Void aVoid) {
+                                        Log.d("DeletionStatus", "Student copy DocumentSnapshot successfully deleted!");
+                                    }
+                                })
+                                .addOnFailureListener(new OnFailureListener() {
+                                    public void onFailure(@NonNull Exception e) {
+                                        Log.w("DeletionStatus", "Error deleting student's document", e);
+                                    }
+                                });
+                    }
+                })
+                .addOnFailureListener(new OnFailureListener() {
+                    @Override
+                    public void onFailure(@NonNull Exception e) {
+                        Log.w("DeletionStatus", "Error deleting faculty's document", e);
+                    }
+                });
+
+    }
+
+    /**
+     * Removes one of the open appointment blocks.
+     */
+    public void removeBlock(String key) {
+        final String deleteBlock = key;
+        final String day = deleteBlock.substring(0, deleteBlock.indexOf(' '));
+        final String time = deleteBlock.substring(deleteBlock.indexOf(' ') + 1);
+        scheduleData.remove(day, time);
+        Log.d("SCHEDULE day", day);
+        Log.d("SCHEDULE day", time);
+        userRef
+                .update("schedule", scheduleData)
+                .addOnSuccessListener(new OnSuccessListener<Void>() {
+                    @Override
+                    public void onSuccess(Void aVoid) {
+                        Log.d("SUCCESS", "DocumentSnapshot successfully updated!");
+                    }
+                })
+                .addOnFailureListener(new OnFailureListener() {
+                    @Override
+                    public void onFailure(@NonNull Exception e) {
+                        Log.w("FAILURE", "Error updating document", e);
+                    }
+                });
+    }
+
+    /**
+     * Create and show the appointment cancellation dialog.
+     */
+    public void showCancellationDialog() {
+        DialogFragment dialog = new CancelAppointmentDialog();
+        dialog.show(getSupportFragmentManager(), "CancelDialogFragment");
+    }
+
+    /**
+     * Create and show the delete open block dialog.
+     */
+    public void showDeleteBlockDialog() {
+        DialogFragment dialog = new DeleteAdvisingBlockDialog();
+        dialog.show(getSupportFragmentManager(), "DeleteBlockDialogFragment");
+    }
+
+
+    @Override
+    public void onBlockDeletePositiveClick(DialogFragment dialog) {
+        removeBlock(blockKey);
+        finish();
+        startActivity(getIntent());
+    }
+
+    @Override
+    public void onBlockDeleteNegativeClick(DialogFragment dialog) {
+
+    }
+
+    @Override
+    public void onCancelPositiveClick(DialogFragment dialog) {
+        // User touched the dialog's positive button
+        deleteAppointment(appointmentKey);
+        finish();
+        startActivity(getIntent());
+    }
+
+    @Override
+    public void onCancelNegativeClick(DialogFragment dialog) {
+        // User touched the dialog's negative button
+
     }
 }
