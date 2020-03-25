@@ -62,7 +62,7 @@ public class AdvisorRegistrationActivity extends AppCompatActivity {
     public boolean onOptionsItemSelected(@NonNull MenuItem item) {
         switch (item.getItemId()) {
             case R.id.navigation_home:
-                Intent homeIntent = new Intent(this, FacultyDashboardActivity.class);
+                Intent homeIntent = new Intent(this, MainActivity.class);
                 startActivity(homeIntent);
                 return true;
 
