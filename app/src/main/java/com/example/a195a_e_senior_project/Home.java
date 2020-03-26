@@ -160,6 +160,9 @@ public class Home extends AppCompatActivity {
                         Intent intent = new Intent(Home.this, SignUpActivity.class);
                         startActivity(intent);
                         return true;
+                    case R.id.nav_forum:
+                        startActivity(new Intent(Home.this, ForumActivity.class));
+                        return true;
                 }
                 return false;
             }
