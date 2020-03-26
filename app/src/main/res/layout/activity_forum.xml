@@ -1,0 +1,25 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent">
+
+    <ListView android:id="@+id/listView"
+        android:layout_height="match_parent"
+        android:layout_width="match_parent"
+        tools:context=".ForumActivity"
+    />
+
+    <com.google.android.material.floatingactionbutton.FloatingActionButton
+        android:id="@+id/fab"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignParentBottom="true"
+        android:layout_alignParentRight="true"
+        android:layout_margin="@dimen/fab_margin"
+        android:tint="#FFEB3B"
+        app:backgroundTint="#5F87AC"
+        app:srcCompat="@drawable/ic_mode_edit_black_24dp" />
+
+</RelativeLayout>

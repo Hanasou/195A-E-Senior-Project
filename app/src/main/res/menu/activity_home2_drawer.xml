@@ -13,6 +13,10 @@
             android:icon="@drawable/ic_person_black_24dp"
             android:title="Advising Hub" />
         <item
+            android:id="@+id/nav_forum"
+            android:icon="@drawable/ic_person_black_24dp"
+            android:title="Forum" />
+        <item
             android:id="@+id/nav_slideshow"
             android:icon="@drawable/ic_content_copy_black_24dp"
             android:title="@string/terms_condtions" />
