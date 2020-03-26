@@ -7,10 +7,6 @@
         android:title="@string/title_home" />
 
     <item
-        android:id="@+id/navigation_advising"
-        android:title="@string/advising_hub" />
-
-    <item
         android:id="@+id/navigation_forum"
         android:title="@string/forum" />
     <item
