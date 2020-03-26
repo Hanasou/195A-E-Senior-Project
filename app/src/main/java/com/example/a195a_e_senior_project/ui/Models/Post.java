@@ -1,83 +1,57 @@
 package com.example.a195a_e_senior_project.ui.Models;
 
-import com.google.firebase.database.ServerValue;
+import com.google.firebase.Timestamp;
 
 public class Post {
 
-    private String postKey;
+//    private String postKey;
     private String title;
-    private String description;
-    private String picture;
-    private String userId;
-    private String userPhoto;
-    private Object timeStamp;
+    private String content;
+    private String author;
+//    private String picture;
+//    private String userId;
+//    private String userPhoto;
+    private Timestamp postTime;
 
-    public Post(String title, String description, String picture, String userId, String userPhoto) {
+    public Post() {}
+
+    public Post(String title, String content, String author, Timestamp postTime) {
         this.title = title;
-        this.description = description;
-        this.picture = picture;
-        this.userId = userId;
-        this.userPhoto = userPhoto;
-        this.timeStamp = ServerValue.TIMESTAMP;
+        this.content = content;
+        this.postTime = postTime;
+//        this.postTime = ServerValue.TIMESTAMP;
     }
 
-    public Post(){
-
-    }
-
-    public String getPostKey(){
-        return postKey;
-    }
-
-    public void setPostKey(String postKey){
-        this.postKey = postKey;
-    }
 
     public String getTitle() {
         return title;
     }
 
-    public String getDescription() {
-        return description;
+    public String getContent() {
+        return content;
     }
 
-    public String getPicture() {
-        return picture;
+    public String getAuthor() {
+        return author;
     }
 
-    public String getUserId() {
-        return userId;
-    }
-
-    public String getUserPhoto() {
-        return userPhoto;
-    }
-
-    public Object getTimeStamp() {
-        return timeStamp;
+    public Object getPostTime() {
+        return postTime;
     }
 
     public void setTitle(String title) {
         this.title = title;
     }
 
-    public void setDescription(String description) {
-        this.description = description;
+    public void setContent(String content) {
+        this.content = content;
     }
 
-    public void setPicture(String picture) {
-        this.picture = picture;
+    public void setAuthor(String author) {
+        this.author = author;
     }
 
-    public void setUserId(String userId) {
-        this.userId = userId;
-    }
-
-    public void setUserPhoto(String userPhoto) {
-        this.userPhoto = userPhoto;
-    }
-
-    public void setTimeStamp(Object timeStamp) {
-        this.timeStamp = timeStamp;
+    public void setPostTime(Timestamp postTime) {
+        this.postTime = postTime;
     }
 }
