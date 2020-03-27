@@ -29,7 +29,7 @@ import java.util.Map;
 /**
  * Normal User Dashboard Activity. They should be able to navigate to various functions here. May need to migrate.
  */
-public class DashboardActivity extends AppCompatActivity {
+public class DashboardActivity extends BaseActivity {
 
     private FirebaseAuth mAuth;
     private FirebaseUser user;
@@ -64,14 +64,6 @@ public class DashboardActivity extends AppCompatActivity {
         startActivity(intent);
     }
 
-    /**
-     * Navigates to advising hub activity.
-     */
-    public void advisingHub(View view) {
-        Intent intent = new Intent(this, AdvisingHubActivity.class);
-        startActivity(intent);
-    }
-
     public void viewAppointments(View view) {
         Intent intent = new Intent(this, StudentViewAppointmentsActivity.class);
         startActivity(intent);
@@ -81,6 +73,21 @@ public class DashboardActivity extends AppCompatActivity {
         Intent intent = new Intent(this, NotificationsActivity.class);
         startActivity(intent);
     }
+
+    /**
+     * Register an appointment with an advisor
+     * @param view
+     */
+    public void makeAppointment(View view) {
+        Intent intent = new Intent(this, RegisterAppointmentActivity.class);
+        startActivity(intent);
+    }
+
+    public void viewForum(View view) {
+        Intent intent = new Intent(this, ForumActivity.class);
+        startActivity(intent);
+    }
+
     /**
      * Signs the user out
      * @param view

@@ -45,7 +45,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-public class ForumActivity extends AppCompatActivity{
+public class ForumActivity extends BaseActivity{
     private FirebaseFirestore db;
     private FirebaseAuth mAth;
     private FirebaseUser currUser;

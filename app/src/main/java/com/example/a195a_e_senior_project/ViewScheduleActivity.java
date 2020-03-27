@@ -43,7 +43,7 @@ import java.util.Map;
 /**
  * Activity for Faculty viewing their schedule.
  */
-public class ViewScheduleActivity extends AppCompatActivity implements CancelAppointmentDialog.CancelAppointmentDialogListener,
+public class ViewScheduleActivity extends BaseActivity implements CancelAppointmentDialog.CancelAppointmentDialogListener,
         DeleteAdvisingBlockDialog.DeleteAdvisingBlockListener {
 
     private FirebaseAuth mAuth;
@@ -56,38 +56,6 @@ public class ViewScheduleActivity extends AppCompatActivity implements CancelApp
     private String blockKey;
     private String appointmentKey;
     private HashMap<String, String> scheduleData;
-
-    @Override
-    public boolean onCreateOptionsMenu(Menu menu) {
-        MenuInflater menuInflater = new MenuInflater(this);
-        menuInflater.inflate(R.menu.bottom_nav_menu, menu);
-        return super.onCreateOptionsMenu(menu);
-    }
-
-    @Override
-    public boolean onOptionsItemSelected(@NonNull MenuItem item) {
-        switch (item.getItemId()) {
-            case R.id.navigation_home:
-                Intent homeIntent = new Intent(this, MainActivity.class);
-                startActivity(homeIntent);
-                return true;
-
-            case R.id.navigation_advising:
-                return true;
-
-            case R.id.navigation_notifications:
-                return true;
-
-            case R.id.navigation_forum:
-                return true;
-
-            default:
-                // If we got here, the user's action was not recognized.
-                // Invoke the superclass to handle it.
-                return super.onOptionsItemSelected(item);
-
-        }
-    }
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {

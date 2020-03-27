@@ -55,7 +55,7 @@ import android.widget.Toast;
 import java.util.HashMap;
 import java.util.Map;
 
-public class Home extends AppCompatActivity {
+public class Home extends BaseActivity {
 
     private AppBarConfiguration mAppBarConfiguration;
     private static final int perReqCode = 2;
