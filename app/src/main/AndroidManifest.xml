@@ -9,14 +9,14 @@
         android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="true"
         android:theme="@style/AppTheme">
-        <activity android:name=".StudentViewAppointmentsActivity"></activity>
+        <activity android:name=".BaseActivity"></activity>
+        <activity android:name=".StudentViewAppointmentsActivity" />
         <activity android:name=".AdvisorRegistrationActivity" />
         <activity android:name=".NotificationsActivity" />
         <activity android:name=".ViewScheduleActivity" />
         <activity android:name=".SetScheduleActivity" />
         <activity android:name=".FacultyDashboardActivity" />
         <activity android:name=".RegisterAppointmentActivity" />
-        <activity android:name=".AdvisingHubActivity" />
         <activity android:name=".DepartmentRegistrationActivity" />
         <activity android:name=".DashboardActivity" />
         <activity android:name=".SignUpActivity" />
@@ -25,7 +25,7 @@
         <activity
             android:name=".Home"
             android:label="@string/title_activity_home"
-            android:theme="@style/AppTheme.NoActionBar"></activity>
+            android:theme="@style/AppTheme.NoActionBar" />
         <activity android:name=".HomeActivity" />
         <activity android:name=".MainActivity">
             <intent-filter>

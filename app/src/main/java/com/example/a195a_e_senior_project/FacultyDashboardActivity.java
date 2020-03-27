@@ -16,7 +16,7 @@ import com.google.firebase.firestore.FirebaseFirestore;
 /**
  * Dashboard for faculty members.
  */
-public class FacultyDashboardActivity extends AppCompatActivity {
+public class FacultyDashboardActivity extends BaseActivity {
     private FirebaseAuth mAuth;
     private FirebaseUser user;
     private FirebaseFirestore db;
@@ -61,6 +61,11 @@ public class FacultyDashboardActivity extends AppCompatActivity {
 
     public void viewNotifications(View view) {
         Intent intent = new Intent(this, NotificationsActivity.class);
+        startActivity(intent);
+    }
+
+    public void viewForum(View view) {
+        Intent intent = new Intent(this, ForumActivity.class);
         startActivity(intent);
     }
 

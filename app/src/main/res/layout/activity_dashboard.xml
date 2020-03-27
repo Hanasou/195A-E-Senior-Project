@@ -4,8 +4,8 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context=".DashboardActivity"
-    android:background="#93DCFF">
+    android:background="#93DCFF"
+    tools:context=".DashboardActivity">
 
     <Button
         android:id="@+id/signOut"
@@ -16,9 +16,9 @@
         android:onClick="signOut"
         android:text="@string/sign_out"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.498"
+        app:layout_constraintHorizontal_bias="0.501"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/advisingHub" />
+        app:layout_constraintTop_toBottomOf="@+id/forum" />
 
     <Button
         android:id="@+id/registerDepartment"
@@ -44,14 +44,14 @@
         app:layout_constraintTop_toTopOf="parent" />
 
     <Button
-        android:id="@+id/advisingHub"
+        android:id="@+id/makeAppointment"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginStart="16dp"
         android:layout_marginTop="16dp"
         android:layout_marginEnd="16dp"
-        android:onClick="advisingHub"
-        android:text="@string/advising_hub"
+        android:onClick="makeAppointment"
+        android:text="@string/make_appointment"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="0.503"
         app:layout_constraintStart_toStartOf="parent"
@@ -68,7 +68,7 @@
         android:text="@string/view_appointments"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/signOut" />
+        app:layout_constraintTop_toBottomOf="@+id/makeAppointment" />
 
     <Button
         android:id="@+id/notificationsButton"
@@ -82,4 +82,15 @@
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/viewAppointments" />
+
+    <Button
+        android:id="@+id/forum"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="16dp"
+        android:onClick="viewForum"
+        android:text="@string/forum"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/notificationsButton" />
 </androidx.constraintlayout.widget.ConstraintLayout>

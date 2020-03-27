@@ -5,26 +5,11 @@ import androidx.appcompat.app.AppCompatActivity;
 
 import android.content.Intent;
 import android.os.Bundle;
-import android.util.Log;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
-import android.view.View;
-import android.widget.Toast;
 
-import com.google.android.gms.tasks.OnCompleteListener;
-import com.google.android.gms.tasks.OnFailureListener;
-import com.google.android.gms.tasks.OnSuccessListener;
-import com.google.android.gms.tasks.Task;
-import com.google.firebase.firestore.DocumentSnapshot;
-
-import java.util.HashMap;
-import java.util.Map;
-
-/**
- * Where advising related activities are located.
- */
-public class AdvisingHubActivity extends AppCompatActivity {
+public class BaseActivity extends AppCompatActivity {
 
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
@@ -41,10 +26,9 @@ public class AdvisingHubActivity extends AppCompatActivity {
                 startActivity(homeIntent);
                 return true;
 
-            case R.id.navigation_advising:
-                return true;
-
             case R.id.navigation_forum:
+                Intent forumIntent = new Intent(this, ForumActivity.class);
+                startActivity(forumIntent);
                 return true;
 
             case R.id.navigation_notifications:
@@ -59,18 +43,5 @@ public class AdvisingHubActivity extends AppCompatActivity {
 
         }
     }
-    @Override
-    protected void onCreate(Bundle savedInstanceState) {
-        super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_advising_hub);
-    }
 
-    /**
-     * Register an appointment with an advisor
-     * @param view
-     */
-    public void makeAppointment(View view) {
-        Intent intent = new Intent(this, RegisterAppointmentActivity.class);
-        startActivity(intent);
-    }
 }
