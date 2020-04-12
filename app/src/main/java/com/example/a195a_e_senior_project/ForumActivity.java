@@ -23,9 +23,7 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import androidx.annotation.NonNull;
-import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.Toolbar;
-import androidx.drawerlayout.widget.DrawerLayout;
 import androidx.fragment.app.DialogFragment;
 
 import com.example.a195a_e_senior_project.dialogs.FilterPostsDialog;
@@ -35,7 +33,6 @@ import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.android.gms.tasks.Task;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
-import com.google.android.material.navigation.NavigationView;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.database.annotations.Nullable;
@@ -47,7 +44,6 @@ import com.google.firebase.firestore.FirebaseFirestoreException;
 import com.google.firebase.firestore.Query;
 import com.google.firebase.firestore.QueryDocumentSnapshot;
 import com.google.firebase.firestore.QuerySnapshot;
-import com.google.firebase.firestore.core.OrderBy;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -73,13 +69,14 @@ public class ForumActivity extends BaseActivity implements FilterPostsDialog.Fil
         MenuInflater menuInflater = new MenuInflater(this);
         menuInflater.inflate(R.menu.forum_menu, menu);
 
+        /*
         // Get the SearchView and set the searchable configuration
         SearchManager searchManager = (SearchManager) getSystemService(Context.SEARCH_SERVICE);
-        SearchView searchView = (SearchView) menu.findItem(R.id.app_bar_search).getActionView();
+        SearchView searchView = (SearchView) menu.findItem(R.id.search_bar).getActionView();
         // Assumes current activity is the searchable activity
         searchView.setSearchableInfo(searchManager.getSearchableInfo(getComponentName()));
         searchView.setIconifiedByDefault(false); // Do not iconify the widget; expand it by default
-
+         */
         return super.onCreateOptionsMenu(menu);
     }
 
