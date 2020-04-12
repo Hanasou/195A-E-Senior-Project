@@ -21,8 +21,14 @@
         <activity android:name=".DashboardActivity" />
         <activity android:name=".SignUpActivity" />
         <activity android:name=".SignInActivity" />
-        <activity android:name=".ForumActivity" />
         <activity android:name=".ForumActivity2" />
+        <activity android:name=".ForumActivity">
+            <intent-filter>
+                <action android:name="android.intent.action.SEARCH" />
+            </intent-filter>
+            <meta-data android:name="android.app.searchable"
+                android:resource="@xml/searchable"/>
+        </activity>
         <activity
             android:name=".Home"
             android:label="@string/title_activity_home"
