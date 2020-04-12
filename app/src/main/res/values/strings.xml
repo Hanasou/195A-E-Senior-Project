@@ -91,6 +91,12 @@
     <string name="profile_fragment">Profile Fragment</string>
     <string name="terms_conditions_fragment"><![CDATA[Terms & Conditions Fragment]]></string>
     <string name="terms_condtions"><![CDATA[Terms & Condtions]]></string>
+    <string name="search">Search</string>
+    <string name="filter">Filter</string>
+    <string name="confirm" />
+    <string name="cancel" />
+    <string name="app_label">Posts Search</string>
+    <string name="search_hint">Search for posts</string>
     >>>>>>> please work
     >>>>>>> maybe complete
 </resources>

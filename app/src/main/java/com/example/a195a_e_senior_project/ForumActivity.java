@@ -1,17 +1,24 @@
 package com.example.a195a_e_senior_project;
 
 import android.app.Dialog;
+import android.app.SearchManager;
+import android.content.Context;
+import android.content.Intent;
 import android.graphics.Color;
 import android.graphics.drawable.ColorDrawable;
 import android.net.Uri;
 import android.os.Bundle;
 import android.view.Gravity;
+import android.view.Menu;
+import android.view.MenuInflater;
+import android.view.MenuItem;
 import android.view.View;
 import android.widget.ImageView;
 import android.widget.ListView;
 
 import android.util.Log;
 import android.widget.ProgressBar;
+import android.widget.SearchView;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -19,7 +26,9 @@ import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.Toolbar;
 import androidx.drawerlayout.widget.DrawerLayout;
+import androidx.fragment.app.DialogFragment;
 
+import com.example.a195a_e_senior_project.dialogs.FilterPostsDialog;
 import com.example.a195a_e_senior_project.ui.Models.Post;
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.OnFailureListener;
@@ -45,7 +54,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-public class ForumActivity extends BaseActivity{
+public class ForumActivity extends BaseActivity implements FilterPostsDialog.FilterPostsListener{
     private FirebaseFirestore db;
     private FirebaseAuth mAth;
     private FirebaseUser currUser;
@@ -54,7 +63,38 @@ public class ForumActivity extends BaseActivity{
     private List<Post> mPostList;
     private PostAdapter mPostAdapter;
 
+    private ArrayList<String> selectedFilters;
+
     private Dialog popAddPost;
+    private FilterPostsDialog filterPostsDialog;
+
+    @Override
+    public boolean onCreateOptionsMenu(Menu menu) {
+        MenuInflater menuInflater = new MenuInflater(this);
+        menuInflater.inflate(R.menu.forum_menu, menu);
+
+        // Get the SearchView and set the searchable configuration
+        SearchManager searchManager = (SearchManager) getSystemService(Context.SEARCH_SERVICE);
+        SearchView searchView = (SearchView) menu.findItem(R.id.app_bar_search).getActionView();
+        // Assumes current activity is the searchable activity
+        searchView.setSearchableInfo(searchManager.getSearchableInfo(getComponentName()));
+        searchView.setIconifiedByDefault(false); // Do not iconify the widget; expand it by default
+
+        return super.onCreateOptionsMenu(menu);
+    }
+
+    @Override
+    public boolean onOptionsItemSelected(@NonNull MenuItem item) {
+        switch (item.getItemId()) {
+            case R.id.filter_posts:
+                showFiltersDialog();
+
+            default:
+                // If we got here, the user's action was not recognized.
+                // Invoke the superclass to handle it.
+                return super.onOptionsItemSelected(item);
+        }
+    }
 
     @Override
     protected void onCreate(final Bundle savedInstanceState) {
@@ -68,6 +108,17 @@ public class ForumActivity extends BaseActivity{
         mListView = (ListView) findViewById(R.id.listView);
         mPostList = new ArrayList<Post>();
         mPostAdapter = new PostAdapter(ForumActivity.this, mPostList);
+
+        // Filter information
+        selectedFilters = new ArrayList<String>();
+
+        // Get the intent, verify the action and get the query
+        Intent intent = getIntent();
+        if (Intent.ACTION_SEARCH.equals(intent.getAction())) {
+            String query = intent.getStringExtra(SearchManager.QUERY);
+            // Do Search
+            searchPosts(query);
+        }
 
         // init pop-up
         initialPop();
@@ -202,5 +253,61 @@ public class ForumActivity extends BaseActivity{
 
     private void showMessage(String message){
         Toast.makeText(ForumActivity.this, message, Toast.LENGTH_LONG).show();
+    }
+
+    /**
+     * Filter posts based on what user selected in FilterPostsDialog
+     * @param activeFilters List of filters that user selected
+     */
+    public void filterPosts(ArrayList<String> activeFilters) {
+        if (activeFilters.contains("My Posts")) {
+            ArrayList<Post> myPosts = new ArrayList<Post>();
+            PostAdapter filteredPostAdapter = new PostAdapter(ForumActivity.this, myPosts);
+            for (Post p : mPostList) {
+                if (p.getAuthor().equals(currUser.getEmail())) {
+                    myPosts.add(p);
+                }
+            }
+            mListView.setAdapter(filteredPostAdapter);
+        }
+        else {
+            mListView.setAdapter(mPostAdapter);
+        }
+    }
+
+    public void searchPosts(String searchTerm) {
+        if (searchTerm.equals("")) {
+            mListView.setAdapter(mPostAdapter);
+        }
+        else {
+            ArrayList<Post> searchedPosts = new ArrayList<Post>();
+            PostAdapter searchedPostAdapter = new PostAdapter(ForumActivity.this, searchedPosts);
+            for (Post p : mPostList) {
+                if (p.getTitle().contains(searchTerm)) {
+                    searchedPosts.add(p);
+                }
+            }
+            mListView.setAdapter(searchedPostAdapter);
+        }
+    }
+
+    public void showFiltersDialog() {
+
+        filterPostsDialog = new FilterPostsDialog();
+        filterPostsDialog.show(getSupportFragmentManager(), "FilterPostsDialogFragment");
+    }
+
+    @Override
+    public void onDialogPositiveClick(DialogFragment dialog) {
+        // User touched the dialog's positive button
+        this.selectedFilters = filterPostsDialog.getSelectedItems();
+        Log.d("Active Filters", selectedFilters.toString());
+        filterPosts(selectedFilters);
+    }
+
+    @Override
+    public void onDialogNegativeClick(DialogFragment dialog) {
+        // User touched the dialog's negative button
+
     }
 }
