@@ -1,9 +1,12 @@
 package com.example.a195a_e_senior_project.ui.Models;
 
 import com.google.firebase.Timestamp;
+import com.google.firebase.firestore.DocumentId;
 
 public class Post {
-
+    //private firestore doc id
+    @DocumentId
+    private String documentId;
 //    private String postKey;
     private String title;
     private String content;
@@ -39,6 +42,10 @@ public class Post {
         return postTime;
     }
 
+    public String getDocumentId() {
+        return documentId;
+    }
+
     public void setTitle(String title) {
         this.title = title;
     }
@@ -53,5 +60,9 @@ public class Post {
 
     public void setPostTime(Timestamp postTime) {
         this.postTime = postTime;
+    }
+
+    public void setDocumentId(String documentId) {
+        this.documentId = documentId;
     }
 }

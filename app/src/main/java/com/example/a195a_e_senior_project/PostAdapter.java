@@ -13,33 +13,41 @@ import androidx.annotation.NonNull;
 
 import com.example.a195a_e_senior_project.ui.Models.Post;
 
+import java.util.ArrayList;
 import java.util.List;
 
 public class PostAdapter extends ArrayAdapter<Post>{
-    public PostAdapter(Context context, List<Post> posts) {
+    private Context mContext;
+    private List<Post> postList = new ArrayList<>();
+
+    public PostAdapter(@NonNull Context context, List<Post> posts) {
         super(context,0, posts);
+        mContext = context;
+        postList = posts;
     }
 
     @Override
     public View getView(int position, View convertView, ViewGroup parent){
-        if(convertView == null){
+        View listPostView = convertView;
+        if(listPostView == null){
             Log.d("Forum", "convertView is null");
-            convertView =  ((Activity)getContext()).getLayoutInflater().inflate(R.layout.post_detail,parent,false);
+            LayoutInflater inflater = (LayoutInflater) mContext.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
+            listPostView = inflater.inflate(R.layout.post_detail,parent,false);
         }
 
-        TextView titleTextView = (TextView) convertView.findViewById(R.id.title);
-        TextView contentTextView = (TextView) convertView.findViewById(R.id.content);
-        TextView authorTextView = (TextView) convertView.findViewById(R.id.author);
-        TextView timeTextView = (TextView) convertView.findViewById(R.id.postTime);
+        TextView titleTextView = (TextView) listPostView.findViewById(R.id.title);
+        TextView contentTextView = (TextView) listPostView.findViewById(R.id.content);
+        TextView authorTextView = (TextView) listPostView.findViewById(R.id.author);
+        TextView timeTextView = (TextView) listPostView.findViewById(R.id.postTime);
 
         Post post = getItem(position);
 
-        titleTextView.setText(post.getTitle());
-        contentTextView.setText(post.getContent());
-        authorTextView.setText(post.getAuthor());
+        titleTextView.setText("Title: " + post.getTitle());
+        contentTextView.setText("Content: " + post.getContent());
+        authorTextView.setText("Author: " + post.getAuthor());
         if(post.getPostTime() != null)
-            timeTextView.setText(((Timestamp) post.getPostTime()).toDate().toString());
+            timeTextView.setText("Date: " + ((Timestamp) post.getPostTime()).toDate().toString());
 
-        return convertView;
+        return listPostView;
     }
 }
