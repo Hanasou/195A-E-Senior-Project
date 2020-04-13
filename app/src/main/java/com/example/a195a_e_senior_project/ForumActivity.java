@@ -90,7 +90,7 @@ public class ForumActivity extends BaseActivity{
             @Override
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
                 Log.d("Forum listener", "Successful listen on click");
-                Toast.makeText(ForumActivity.this,"Selected "+(position +1) +" \nID："+ mPostList.get(position).getDocumentId(), Toast.LENGTH_SHORT).show();
+                //Toast.makeText(ForumActivity.this,"Selected "+(position +1) +" \nID："+ mPostList.get(position).getDocumentId(), Toast.LENGTH_SHORT).show();
                 Intent intent = new Intent(ForumActivity.this, ForumActivity2.class);
                 intent.putExtra("POST_ID", mPostList.get(position).getDocumentId());
                 startActivity(intent);

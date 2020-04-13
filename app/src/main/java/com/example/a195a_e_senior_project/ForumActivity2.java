@@ -23,6 +23,7 @@ import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.android.gms.tasks.Task;
+import com.google.android.gms.tasks.Tasks;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
@@ -42,6 +43,7 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.concurrent.ExecutionException;
 
 public class ForumActivity2 extends BaseActivity{
     private FirebaseFirestore db;
@@ -88,7 +90,6 @@ public class ForumActivity2 extends BaseActivity{
         // init post
         getPost();
 
-        getComment();
         updateComment();
     }
 
@@ -121,13 +122,14 @@ public class ForumActivity2 extends BaseActivity{
                 popupAddButton.setVisibility(View.INVISIBLE);
                 popupClickProgress.setVisibility(View.VISIBLE);
 
-                // test input fields (title and description) and post picture
+                /*// test input fields (title and description) and post picture
                 if(!popupTitle.getText().toString().isEmpty() && !popupDes.getText().toString().isEmpty()){
                     //Log.d("addButton", "In on Click");
                     addPost(popupTitle.getText().toString(), popupDes.getText().toString());
-                }
+                }*/
 
                 if(!popupTitle.getText().toString().isEmpty() && !popupDes.getText().toString().isEmpty()){
+                    addPost(popupTitle.getText().toString(), popupDes.getText().toString());
                     showMessage("Success to comment");
                     //getPost();
                     popAddPost.dismiss();
@@ -179,6 +181,7 @@ public class ForumActivity2 extends BaseActivity{
                                 //Log.d("Forum2", document.getId() + " => " + document.getData());
                             }
                             mListView.setAdapter(mPostAdapter);
+                            getComment();
                         } else {
                             Toast.makeText(ForumActivity2.this, "Error: Post doesn't exist", Toast.LENGTH_SHORT).show();
                             Log.d("Forum2", "Error: fail to get DocumentSnapshot", task.getException());
@@ -210,24 +213,24 @@ public class ForumActivity2 extends BaseActivity{
     private void updateComment(){
         db.collection("forum").document(documentId).collection("comment")
                 .orderBy("postTime", Query.Direction.ASCENDING).addSnapshotListener(new EventListener<QuerySnapshot>() {
-                    @Override
-                    public void onEvent(@Nullable QuerySnapshot value,
-                                        @Nullable FirebaseFirestoreException e) {
-                        if (e != null) {
-                            Log.w("Forum listener", "Listen failed.", e);
-                            return;
-                        }
-                        mPostList.clear();
-                        mPostAdapter.add(mainPost);
-                        for (QueryDocumentSnapshot doc : value) {
-                            if (doc != null) {
-                                //Log.d("Forum listener", (String) doc.get("title"));
-                                mPostAdapter.add(doc.toObject(Post.class));
-                            }
-                        }
-                        //Log.d("Forum listener", "Add new post(s) successfully");
+            @Override
+            public void onEvent(@Nullable QuerySnapshot value,
+                                @Nullable FirebaseFirestoreException e) {
+                if (e != null) {
+                    Log.w("Forum listener", "Listen failed.", e);
+                    return;
+                }
+                mPostList.clear();
+                mPostAdapter.add(mainPost);
+                for (QueryDocumentSnapshot doc : value) {
+                    if (doc != null) {
+                        //Log.d("Forum listener", (String) doc.get("title"));
+                        mPostAdapter.add(doc.toObject(Post.class));
                     }
-                });
+                }
+                //Log.d("Forum listener", "Add new post(s) successfully");
+            }
+        });
     }
 
     private void showMessage(String message){
