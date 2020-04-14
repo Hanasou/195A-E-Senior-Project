@@ -18,6 +18,7 @@ import android.widget.ListView;
 
 import android.util.Log;
 import android.widget.ProgressBar;
+import android.widget.SearchView;
 import android.widget.TextView;
 import android.widget.Toast;
 
