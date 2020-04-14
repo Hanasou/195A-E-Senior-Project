@@ -51,7 +51,7 @@ public class CancelAppointmentDialog extends DialogFragment {
                         listener.onCancelPositiveClick(CancelAppointmentDialog.this);
                     }
                 })
-                .setNegativeButton("Back", new DialogInterface.OnClickListener() {
+                .setNegativeButton("Cancel", new DialogInterface.OnClickListener() {
                     public void onClick(DialogInterface dialog, int id) {
                         listener.onCancelNegativeClick(CancelAppointmentDialog.this);
                     }

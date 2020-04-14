@@ -51,7 +51,7 @@ public class DeleteAdvisingBlockDialog extends DialogFragment {
                         listener.onBlockDeletePositiveClick(DeleteAdvisingBlockDialog.this);
                     }
                 })
-                .setNegativeButton("Back", new DialogInterface.OnClickListener() {
+                .setNegativeButton("Cancel", new DialogInterface.OnClickListener() {
                     public void onClick(DialogInterface dialog, int id) {
                         listener.onBlockDeleteNegativeClick(DeleteAdvisingBlockDialog.this);
                     }
