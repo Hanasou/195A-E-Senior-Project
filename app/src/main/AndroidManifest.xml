@@ -21,10 +21,7 @@
         <activity android:name=".DashboardActivity" />
         <activity android:name=".SignUpActivity" />
         <activity android:name=".SignInActivity" />
-<<<<<<< HEAD
         <activity android:name=".ForumActivity2" />
-=======
->>>>>>> 07c498e32a13d7af4a85485f76a986b4669f23a7
         <activity android:name=".ForumActivity">
             <intent-filter>
                 <action android:name="android.intent.action.SEARCH" />
