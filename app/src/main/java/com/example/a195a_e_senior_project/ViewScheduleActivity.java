@@ -79,9 +79,10 @@ public class ViewScheduleActivity extends BaseActivity implements CancelAppointm
                     DocumentSnapshot document = task.getResult();
                     if (document.exists()) {
                         scheduleData = (HashMap<String, String>) document.getData().get("schedule");
-                        for (String day : scheduleData.keySet()) {
-                            blocksList.add(day + " " + scheduleData.get(day));
-                        }
+                        if(scheduleData != null)
+                            for (String day : scheduleData.keySet()) {
+                                blocksList.add(day + " " + scheduleData.get(day));
+                            }
                         inboxRef.get()
                                 .addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
                                     @Override
