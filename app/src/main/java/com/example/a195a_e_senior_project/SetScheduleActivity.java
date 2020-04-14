@@ -139,7 +139,10 @@ public class SetScheduleActivity extends BaseActivity {
                     if (document.exists()) {
                         Map<String, String> scheduleData = (HashMap<String, String>) document.getData().get("schedule");
                         for (String day : checkedBoxes) {
-                            scheduleData.put(day, timeSelected);
+                            if(scheduleData == null){
+                                scheduleData = new HashMap<>();
+                                scheduleData.put(day, timeSelected);
+                            }else scheduleData.put(day, timeSelected);
                         }
                         userRef.update(
                                 "schedule", scheduleData)
