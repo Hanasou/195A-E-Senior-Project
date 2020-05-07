@@ -1,3 +1,7 @@
+Note: If you are viewing this as raw text, you won't be able to see the images and markdown elements. Go to our Github repository
+to view them.
+https://github.com/mczhou1984/195A-E-Senior-Project
+
 # Senior Project - Process Management System
 The goal of our project is to develop a mobile application that allows us to make it more accessible to our advising process as well as a consolidated space where students and faculty can share information.
 
